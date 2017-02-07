@@ -1,0 +1,3 @@
+- Reuse template from ex2
+- Read a simple app in PDF and write your own app with EX2 template.
+- Commit to git.

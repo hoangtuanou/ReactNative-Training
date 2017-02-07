@@ -1,0 +1,4 @@
+- Use code of ex1 - Login
+- Write code to basic login with username === yourname, pass === frontend
+- Using AsyncStorage, Create and save token to keep login on close/re-launch app
+- Push to git

@@ -1,0 +1,2 @@
+- Create new page/project
+- Make a demo like this tutorial: http://www.reactnativeexpress.com/animated

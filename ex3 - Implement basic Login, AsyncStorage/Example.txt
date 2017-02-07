@@ -1,0 +1,334 @@
+const widthWindow = Dimensions.get('window').width;
+const heightWindow = Dimensions.get('window').height;
+const SESSION_TIMEOUT = 8; // hours
+const DELAY_BETWEEN_SURVEYS = 20; // hours
+let timeout;
+
+export default class Login extends Component {
+  constructor(props) {
+    super(props);
+
+    this.navigation = this.navigation.bind(this);
+    this.handleValidate = this.handleValidate.bind(this);
+    this.handleSubmitTextInput = this.handleSubmitTextInput.bind(this);
+    this.handleFormError = this.handleFormError.bind(this);
+    this.shouldShowSurvey = this.shouldShowSurvey.bind(this);
+
+    this.state = {
+      isValidatedFail: false,
+      username: this.props.userId,
+      password: '',
+      isFocusPass: false,
+      modalVisible: false
+    };
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem(USER_LOGINED_KEY, (err, data) => {
+      const user = JSON.parse(data);
+      const now = new Date().getTime();
+      if (user && user.username && user.password && user.time && ((now - user.time) / (1000 * 3600)) < SESSION_TIMEOUT) {
+        this.setState({
+          username: user.username,
+          password: user.password
+        }, () => {
+          this.handleValidate(true);
+        });
+      } else {
+        REDUX_STORE.dispatch(reset());
+      }
+    });
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.context.tracker.capture(AUTH.LOGIN());
+    }, 700);
+    // InteractionManager.runAfterInteractions
+  }
+
+  navigation(user, autoLogin) {
+    const props = this.props;
+    const username = this.state.username;
+    const type = user.type.toLowerCase();  // [Armis] use to check manager or seller
+    const isManager = type === 'manager';  // [Armis] use to check manager or seller
+
+    extend(USER, user);
+
+    armis.disconnect();
+    armis.connect(SERVICES.ARMIS.url, username);
+    armis.getClient().onmessage = (from, msg) => {
+      msg['username'] = username;
+      props.armis.onMessage(msg, isManager);
+    };
+    armis.getClient().onerror = function (err) {
+      console.log(JSON.stringify(err));
+    };
+    props.armis.onLogin(type, username);
+
+    try {
+      AsyncStorage.setItem(USER_LOGINED_KEY, JSON.stringify({
+        username: username,
+        password: this.state.password,
+        time: new Date().getTime()
+      }));
+      setupLogoutTimeout(props.navigator, username, SESSION_TIMEOUT);
+    } catch(err) {
+      alert('Can\'t save user on local storage');
+    }
+    if (autoLogin === true) {
+      this.props.navigator.replace(routes.Home());
+    } else {
+      this.shouldShowSurvey();
+    }
+  }
+
+  shouldShowSurvey() {
+    var me = this;
+    AsyncStorage.getItem('lastSurvey', function (err, res) {
+      // Can't get 'lastSurvey'
+      if (err)
+        console.log("Error when getting 'lastSurvey'.");
+      // No error
+      else {
+        // Null response = first launch
+        if (res == null) {
+          try {
+            AsyncStorage.setItem('lastSurvey', '1');
+          }
+          catch (err) { console.log("Error when saving 'lastSurvey'"); }
+          me.props.navigator.replace(routes.Home());
+        }
+        // Date response
+        else {
+          const lastSurveyDate = new Date(res);
+          const now = new Date();
+          const diffDate = (now.getTime() - lastSurveyDate.getTime()) / (1000 * 3600);
+          // If the last survey was 24h (or more) earlier
+          if (SERVICES.SURVEY && SERVICES.SURVEY.enabled && diffDate > DELAY_BETWEEN_SURVEYS) {
+            try {
+              AsyncStorage.setItem('lastSurvey', now);
+            }
+            catch (err) { console.log('Error save storage!', err); }
+            me.props.navigator.replace(routes.MainSurvey);
+          } else {
+            me.props.navigator.replace(routes.Home());
+          }
+        }
+      }
+    });
+  }
+
+  handleChangeText(text, inputName) {
+    this.setState({
+      [inputName]: inputName === 'password' ? btoa(text) : text
+    });
+  }
+
+  handleForgotPass() {
+    let url = 'https://lostpassword.carrefour.com/faces/home.xhtml';
+    Linking.canOpenURL(url).then(isSupported => {
+      if (isSupported) {
+        this.context.tracker.capture(AUTH.FORGOT_PASSWORD());
+        Linking.openURL(url);
+      } else {
+        console.log('Can not open URL: ', url);
+      }
+    });
+  }
+
+  handleFormError() {
+    this.setState({ isValidatedFail: true }, () => {
+      this.context.tracker.capture(AUTH.FORM_ERROR());
+    });
+  }
+
+  handleValidate(autoLogin) {
+    if (!this.state.username || !this.state.password) {
+      return this.handleFormError();
+    }else{
+      this.setState({
+        modalVisible: true
+      });
+    }
+    const payload = JSON.stringify({
+      user: {
+        id: this.state.username,
+        pass: this.state.password
+      }
+    });
+    fetchTimeout(10000, {method: 'POST', headers: {'Accept': 'application/json','Content-Type': 'application/json'}, body: payload},
+     fetch(SERVICES.AUTH.url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: payload
+    })).then((response) => {
+      if (response.ok)
+        return response.json();
+
+      console.log('Wrong network answer');
+      return;
+    }).then((json) => {
+      if (json) {
+        if (json.result && json.result.code != 0) {
+          console.log('Internal server error', json);
+        }
+        if (json.user) {
+          STORE_INFO.shopId     = json.user.shopID;
+          STORE_INFO.shopFormat = json.user.shopFormat;
+          STORE_INFO.shopName   = json.user.shopName;
+          this.context.onAuthenticated(json.user, () => {
+            this.setState({ isValidatedFail: false }, () => {
+              this.navigation(json.user, autoLogin);
+            });
+          });
+        } else {
+          if (timeout) { clearTimeout(timeout); }
+          timeout = setTimeout(() => {
+            this.setState({
+              modalVisible: false
+            });
+          },1000);
+          return this.handleFormError();
+        }
+      }
+    }).catch(function (error) {
+      Alert.alert(
+        "Erreur de configuration",
+        'Détails: ' + error,
+        [
+          {text: 'OK', onPress: () => BackAndroid.exitApp(0)}
+        ]
+      )
+    });
+  }
+
+  handleSubmitTextInput() {
+    if (this.state.username && this.state.password) {
+      this.handleValidate();
+    }
+  }
+
+  renderLoading() {
+    if(!this.state.modalVisible){
+      return <View />
+    } else
+    return(
+      <View style={styles.modal}>
+          <Loader />
+      </View>
+    );
+  }
+
+  renderError() {
+    if (this.state.isValidatedFail) {
+      return (
+        <View style={{ marginTop: 5 }}>
+          <RobotoText type="Regular" style={{ color: 'red', textAlign: 'center', fontSize: 11 }}>
+            Nom utilisateur ou mot de passe incorrect.
+          </RobotoText>
+        </View>
+      );
+    }
+    return null;
+  }
+
+  render() {
+    return (
+      <TouchableWithoutFeedback onPress={() => { DismissKeyboard() } }>
+        <View style={[styles.wrapper]}>
+          {this.renderLoading()}
+          {/* block Logo */}
+          <View style={styles.blockLogo}>
+            <Image
+              style={styles.logo}
+              resizeMode="stretch"
+              source={assets.icons.logo_color}
+              />
+            <RobotoText type="Regular" style={{ fontSize: 10, marginTop: 10 }}>
+              version {pkg.version}
+            </RobotoText>
+          </View>
+
+          {/* block text input */}
+          <View style={styles.blockTextInput}>
+            <View style={[
+              styles.inputWrapper,
+              {
+                borderColor: !this.state.isValidatedFail ? '#ccc' : 'red'
+              }
+            ]}>
+              <Image
+                source={assets.icons.user}
+                resizeMode="stretch"
+                style={styles.icon}
+                />
+              <TextInput
+                style={[styles.textInput, { fontFamily: 'Roboto-Regular' }]}
+                defaultValue={this.state.username}
+                placeholder="Nom d'utilisateur"
+                placeholderTextColor="#ccc"
+                underlineColorAndroid="rgba(0,0,0,0)"
+                onSubmitEditing={this.handleSubmitTextInput}
+                onChangeText={(text) => { this.handleChangeText(text, 'username') } }
+                />
+            </View>
+
+            <View style={[
+              styles.inputWrapper,
+              {
+                marginTop: 10,
+                borderColor: !this.state.isValidatedFail ? '#ccc' : 'red'
+              }
+            ]}>
+              <Image
+                source={assets.icons.lock}
+                resizeMode="stretch"
+                style={[styles.icon, { width: 15, marginLeft: 5 }]}
+                />
+              <TextInput
+                style={[styles.textInput, { fontFamily: 'Roboto-Regular' }]}
+                autoFocus={this.props.isFocusPassInput}
+                secureTextEntry={true}
+                placeholder="Mot de passe"
+                placeholderTextColor="#ccc"
+                underlineColorAndroid="rgba(0,0,0,0)"
+                onSubmitEditing={this.handleSubmitTextInput}
+                onChangeText={(text) => { this.handleChangeText(text, 'password') } }
+                />
+            </View>
+
+            {this.renderError()}
+          </View>
+
+          {/* block Submit */}
+          <View style={styles.blockSubmit}>
+            <View style={styles.submitBtn}>
+              <TouchableOpacity
+                onPress={() => {
+                this.handleValidate();
+                DismissKeyboard();
+                }}
+                style={{ padding: 12 }}>
+                <RobotoText type="Bold" style={{ color: 'white' }}>
+                  CONNEXION
+                </RobotoText>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.forgotPass}>
+              <TouchableOpacity onPress={this.handleForgotPass.bind(this)}>
+                <RobotoText type="Regular" style={{ color: '#005BAB', fontSize: 10 }}>
+                  Mot de passe oublié ?
+                </RobotoText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  }
+}
