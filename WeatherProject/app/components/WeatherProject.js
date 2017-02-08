@@ -43,21 +43,27 @@ export default class WeatherProject extends Component {
     }
     return (
       <View style={styles.container}>
-        <View style={styles.overlay}>
-          <View style={styles.row}>
-            <Text style={styles.mainText}>
-              Current weather for
-            </Text>
-            <View style={styles.zipContainer}>
-              <TextInput
-                style={styles.zipCode,{flex:1,color:'#FFFFFF'}}
-                returnKeyType='go'
-                onSubmitEditing={this.handleTextChange.bind(this)}
-              />
+        <Image
+          source={require('../img/background.png')}
+          resizeMode='cover'
+          style={styles.backdrop}
+        >
+          <View style={styles.overlay}>
+            <View style={styles.row}>
+              <Text style={[styles.mainText,{paddingTop:10,paddingLeft:5}]}>
+                Current weather for
+              </Text>
+              <View style={styles.zipContainer}>
+                <TextInput
+                  style={[styles.zipCode,styles.mainText]}
+                  returnKeyType='go'
+                  onSubmitEditing={this.handleTextChange.bind(this)}
+                />
+              </View>
             </View>
+            {content}
           </View>
-          {content}
-        </View>
+        </Image>
       </View>
     );
   }
@@ -65,7 +71,12 @@ export default class WeatherProject extends Component {
 const baseFontSize = 16;
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    alignItems: 'center'
+  },
+  backdrop: {
+    flex: 1,
+    flexDirection: 'column'
   },
   overlay: {
     paddingTop: 5,
@@ -78,25 +89,22 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 30
+    paddingVertical: 50,
+    paddingHorizontal: 200
   },
   zipContainer: {
     flex: 1,
-    borderColor: '#DDDDDD',
-    borderWidth: 1,
-    height: 40
+    marginLeft: 5,
+    height: 50
   },
   zipCode: {
-    width: 100,
-    height: 50,
-    borderColor: 'blue',
-    borderWidth: 1
+    borderBottomColor: '#DDDDDD',
+    borderBottomWidth: 1
   },
   mainText: {
     flex: 1,
+    height: 40,
     fontSize: baseFontSize,
-    color: '#FFFFFF',
-    borderColor: '#DDDDDD',
-    borderWidth: 1
+    color: '#FFFFFF'
   }
 });
