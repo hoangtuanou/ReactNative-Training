@@ -1,0 +1,4 @@
+- Create new page
+- Doing this demo: http://www.reactnativeexpress.com/gestures
+- View the image to learn Responder Control Flow
+- Commit demo to GIT
