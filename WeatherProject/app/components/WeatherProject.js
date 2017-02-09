@@ -9,22 +9,23 @@ export default class WeatherProject extends Component {
     super(props);
     this.state = {
       zip: '',
-      forecast: null
+      forecast: []
     };
   }
 
   handleTextChange(e){
     let zip = e.nativeEvent.text;
     this.setState({zip});
-    fetch('http://api.openweathermap.org/data/2.5/weather?q=' + zip + '&units=imperial&APPID=d47e778f4341fa1b85542cdaa5147add')
+    fetch('http://api.openweathermap.org/data/2.5/forecast/daily?q=' + zip + '&units=imperial&cnt=7&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add')
       .then((response) => response.json())
       .then((responseJSON) => {
+        console.log(responseJSON);
+        let data = [];
+        responseJSON.list.map((t)=>{
+          data.push(t);
+        });
         this.setState({
-          forecast: {
-            main: responseJSON.weather[0].main,
-            description: responseJSON.weather[0].description,
-            temp: responseJSON.main.temp
-          }
+          forecast: data
         });
       })
       .catch((error) => {
@@ -33,14 +34,7 @@ export default class WeatherProject extends Component {
   }
 
   render() {
-    let content = null;
-    if(this.state.forecast != null){
-      content = <Forecast
-            main={this.state.forecast.main}
-            description={this.state.forecast.description}
-            temp={this.state.forecast.temp}
-          />
-    }
+
     return (
       <View style={styles.container}>
         <Image
@@ -61,7 +55,16 @@ export default class WeatherProject extends Component {
                 />
               </View>
             </View>
-            {content}
+          </View>
+          <View>
+            {
+              this.state.forecast.map((t,id)=>
+                <Forecast
+                  key={id}
+                  data={t}
+                />
+              )
+            }
           </View>
         </Image>
       </View>

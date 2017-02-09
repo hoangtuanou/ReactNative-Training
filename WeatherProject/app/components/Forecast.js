@@ -3,16 +3,11 @@ import {View, Text, StyleSheet} from 'react-native';
 
 export default class Forecast extends Component{
   render(){
+    console.log(this.props.data);
     return(
       <View>
         <Text style={styles.bigText}>
-          {this.props.main}
-        </Text>
-        <Text style={styles.mainText}>
-          Current conditions: {this.props.description}
-        </Text>
-        <Text style={styles.bigText}>
-          {this.props.temp}°F
+          {this.props.data.weather[0].main}
         </Text>
       </View>
     )
