@@ -2,7 +2,8 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: '#394264'
   },
   blockContent: {
     flex:1,
@@ -10,36 +11,38 @@ export const styles = StyleSheet.create({
     alignItems: 'center'
   },
   title: {
+    color: '#FFFFFF',
     marginBottom: 10
   },
   inputWrapper: {
     flexDirection: 'row',
-    justifyContent: 'flex-start'
-  },
-  logo: {
-    borderColor: 'blue',
-    borderWidth: 1,
-    width:40,
-    height:40
-  },
-  input: {
+    alignItems: 'center',
     width: 250,
     height: 40,
     borderRadius: 5,
     marginTop: 15,
-    borderColor: 'black',
-    borderWidth: 1
+    backgroundColor: '#50597b',
+    borderWidth: 0.5
+  },
+  logo: {
+    marginHorizontal: 10
+  },
+  input: {
+    flex:3,
+    color: '#FFFFFF'
   },
   btn: {
-    backgroundColor: 'red',
+    backgroundColor: '#e64c65',
     borderRadius: 5,
     paddingVertical: 10,
     paddingHorizontal: 40,
     marginVertical: 20
   },
   facebook: {
-    backgroundColor: 'blue',
+    flexDirection: 'row',
+    backgroundColor: '#3468af',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 10
   }
 });

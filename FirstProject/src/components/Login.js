@@ -26,27 +26,37 @@ export default class Login extends Component{
       AsyncStorage.setItem('data',JSON.stringify(this.props.state));
     }
     else{
-      Alert.alert('Error!!!','Your email or password isn\'t correct. Please confirm again.',[{text:'OK'}]);
+      Alert.alert('Error!!!','Your email or password isn\'t correct. Please sign in again.',[{text:'OK'}]);
     }
   }
 
   render(){
+    let focusUsername = this.props.state.isFocusUsername ? '#11a8ab':'black';
+    let focusPass = this.props.state.isFocusPass ? '#11a8ab':'black';
     return(
       <View style={styles.container}>
         <View style={styles.blockContent}>
           <Text style={styles.title}>SIGN IN YOUR ACCOUNT</Text>
-          <View style={styles.inputWrapper}>
-            <Image style={styles.logo}/>
+          <View style={[styles.inputWrapper,{borderColor:focusUsername}]}>
+            <Image
+              style={styles.logo}
+              source={require('../icons/Mail-Icon.png')}
+            />
             <TextInput
               style={styles.input}
               underlineColorAndroid='rgba(0,0,0,0)'
               placeholder='email'
               placeholderTextColor='#ccc'
               onChangeText={(text)=>{this.props.handleChangeText(text,'username')}}
+              onFocus={()=>{this.props.onFocus('isFocusUsername')}}
+              onBlur={()=>{this.props.clearState()}}
             />
           </View>
-          <View style={styles.inputWrapper}>
-            <Image style={styles.logo}/>
+          <View style={[styles.inputWrapper,{borderColor:focusPass}]}>
+            <Image
+              style={styles.logo}
+              source={require('../icons/Lock-icon.png')}
+            />
             <TextInput
               style={styles.input}
               secureTextEntry={true}
@@ -54,17 +64,22 @@ export default class Login extends Component{
               placeholder='password'
               placeholderTextColor='#ccc'
               onChangeText={(text)=>{this.props.handleChangeText(text,'password')}}
+              onFocus={()=>{this.props.onFocus('isFocusPass')}}
+              onBlur={()=>{this.props.clearState()}}
             />
           </View>
           <TouchableOpacity style={styles.btn} onPress={this.handleLogin.bind(this)}>
             <Text style={{color:'#FFFFFF'}}>SIGN IN</Text>
           </TouchableOpacity>
           <TouchableOpacity>
-            <Text>Forgot your password?</Text>
+            <Text style={{color:'#ccc'}}>Forgot your password?</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.facebook}>
-          <Image style={styles.logoFace}/>
+          <Image
+              style={styles.logo}
+              source={require('../icons/Facebook-Icon.png')}
+            />
           <Text style={{color:'#FFFFFF'}}>Sign in with Facebook</Text>
         </View>
       </View>

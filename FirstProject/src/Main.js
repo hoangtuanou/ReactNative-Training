@@ -9,7 +9,12 @@ export default class Main extends Component{
 
   constructor(props){
     super(props);
-    this.state={username:'',password:''};
+    this.state={
+      username:'',
+      password:'',
+      isFocusUsername:false,
+      isFocusPass:false
+    };
     this.handleChangeText = this.handleChangeText.bind(this);
   }
 
@@ -22,22 +27,41 @@ export default class Main extends Component{
     }
   }
 
+  onFocus(inputType){
+    if(inputType == 'isFocusUsername'){
+      this.setState({isFocusUsername: true});
+    }
+    else{
+      this.setState({isFocusPass: true});
+    }
+  }
+  clearState(){
+    this.setState({
+                username:'',
+                password:'',
+                isFocusUsername:false,
+                isFocusPass:false
+            });
+  }
   renderScene(route,navigator) {
     if(route.name == 'login'){
       return <Login
             handleChangeText={this.handleChangeText}
             state={this.state}
             navigator={navigator}
+            onFocus={this.onFocus.bind(this)}
+            clearState={this.clearState.bind(this)}
           />
     }
     if(route.name == 'home'){
       return <Home 
             navigator={navigator}
-            clearState={()=>{this.setState({username:'',password:''})}}
+            clearState={this.clearState.bind(this)}
             state={this.state}
           />
     }
   }
+
   render(){
     return(
       <Navigator

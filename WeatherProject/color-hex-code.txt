@@ -1,0 +1,4 @@
+- pink 1: #cc324b
+- pink 2: #e64c65
+- darkblue: #394264
+- grey: #828aa8

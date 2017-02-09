@@ -18,7 +18,7 @@ export default class Home extends Component{
     return(
       <View style={styles.container}>
         <View style={styles.blockContent}>
-          <Text>Welcome {this.props.state.username}!!!</Text>
+          <Text style={styles.title}>Welcome {this.props.state.username}!!!</Text>
           <TouchableHighlight style={styles.btn} onPress={this.onLogOut.bind(this)}>
             <Text>Log Out</Text>
           </TouchableHighlight>
