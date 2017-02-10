@@ -24,12 +24,22 @@ export default class WeatherProject extends Component {
           forecast: data
         });
       });
+    let arrDay=[];
     let day = new Date();
-    let weekday = new Array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
-    let dayOfWeek = weekday[day.getDay()];
-    let date = day.getDate();
     let month = day.getMonth()+1;
-    console.log(dayOfWeek + '-' + date + '-' + month);
+    let i=1;
+    while(i<7){
+      let obj = this.addDays(i);
+      arrDay.push(obj);
+      i++;
+    }
+  }
+
+  addDays(numDays) {
+    let dateObj = new Date();
+    dateObj.setDate(dateObj.getDate()+numDays);
+    console.log(dateObj);
+    return dateObj;
   }
 
   render() {
