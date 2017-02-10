@@ -37,11 +37,15 @@ export default class Main extends Component{
   }
   clearState(){
     this.setState({
-                username:'',
-                password:'',
-                isFocusUsername:false,
-                isFocusPass:false
-            });
+      username:'',
+      password:''
+    });
+  }
+  clearStateFocus(){
+    this.setState({
+      isFocusUsername:false,
+      isFocusPass:false
+    });
   }
   renderScene(route,navigator) {
     if(route.name == 'login'){
@@ -51,6 +55,7 @@ export default class Main extends Component{
             navigator={navigator}
             onFocus={this.onFocus.bind(this)}
             clearState={this.clearState.bind(this)}
+            clearStateFocus={this.clearStateFocus.bind(this)}
           />
     }
     if(route.name == 'home'){

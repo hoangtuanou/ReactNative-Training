@@ -8,18 +8,14 @@ export default class WeatherProject extends Component {
   constructor(props){
     super(props);
     this.state = {
-      zip: '',
       forecast: []
     };
   }
 
-  handleTextChange(e){
-    let zip = e.nativeEvent.text;
-    this.setState({zip});
-    fetch('http://api.openweathermap.org/data/2.5/forecast/daily?q=' + zip + '&units=imperial&cnt=7&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add')
+  componentWillMount(){
+    fetch('http://api.openweathermap.org/data/2.5/forecast/daily?q=London&units=imperial&cnt=7&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add')
       .then((response) => response.json())
       .then((responseJSON) => {
-        console.log(responseJSON);
         let data = [];
         responseJSON.list.map((t)=>{
           data.push(t);
@@ -27,87 +23,79 @@ export default class WeatherProject extends Component {
         this.setState({
           forecast: data
         });
-      })
-      .catch((error) => {
-        console.warn(error);
       });
+    let day = new Date();
+    let weekday = new Array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
+    let dayOfWeek = weekday[day.getDay()];
+    let date = day.getDate();
+    let month = day.getMonth()+1;
+    console.log(dayOfWeek + '-' + date + '-' + month);
   }
 
   render() {
-
     return (
       <View style={styles.container}>
-        <Image
-          source={require('../img/background.png')}
-          resizeMode='cover'
-          style={styles.backdrop}
-        >
-          <View style={styles.overlay}>
-            <View style={styles.row}>
-              <Text style={[styles.mainText,{paddingTop:10,paddingLeft:5}]}>
-                Current weather for
-              </Text>
-              <View style={styles.zipContainer}>
-                <TextInput
-                  style={[styles.zipCode,styles.mainText]}
-                  returnKeyType='go'
-                  onSubmitEditing={this.handleTextChange.bind(this)}
-                />
-              </View>
-            </View>
+        <View style={styles.blockTitle}>
+          <Image
+            source={require('../icons/Pointer-icon.png')}
+          />
+          <Text style={{marginLeft: 10, color: '#FFFFFF'}}>London</Text>
+        </View>
+        <View style={styles.currForecast}>
+          <View style={styles.currDay}>
+            <Text style={{color: '#FFFFFF'}}>Fri 29/06</Text>
+            <Text style={styles.currText}>24</Text>
           </View>
-          <View>
-            {
-              this.state.forecast.map((t,id)=>
-                <Forecast
-                  key={id}
-                  data={t}
-                />
-              )
-            }
-          </View>
-        </Image>
+          <Image 
+            source={require('../icons/SunCloud-big.png')}
+            style={styles.currIcon}
+          />
+        </View>
+        <View style={styles.dailyWrapper}>
+          {
+            this.state.forecast.map((t, index)=>
+              <Forecast
+                key={index}
+                data={t}
+              />
+            )
+          }
+        </View>
       </View>
     );
   }
 }
-const baseFontSize = 16;
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center'
+    flex: 1
   },
-  backdrop: {
-    flex: 1,
-    flexDirection: 'column'
-  },
-  overlay: {
-    paddingTop: 5,
-    backgroundColor: '#000000',
-    opacity: 0.5,
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  row: {
+  blockTitle: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 50,
-    paddingHorizontal: 200
+    backgroundColor: '#cc324b',
   },
-  zipContainer: {
+  currForecast: {
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 70,
+    alignItems: 'center',
+    backgroundColor: '#e64c65'
+  },
+  currDay: {
     flex: 1,
-    marginLeft: 5,
-    height: 50
+    alignItems: 'center'
   },
-  zipCode: {
-    borderBottomColor: '#DDDDDD',
-    borderBottomWidth: 1
-  },
-  mainText: {
-    flex: 1,
-    height: 40,
-    fontSize: baseFontSize,
+  currText: {
+    fontSize: 60,
+    lineHeight: 60,
     color: '#FFFFFF'
+  },
+  dailyWrapper: {
+    flex: 7,
+    flexDirection: 'column'
   }
 });

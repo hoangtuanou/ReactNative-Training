@@ -46,21 +46,3 @@ export const styles = StyleSheet.create({
     paddingVertical: 10
   }
 });
-
-export const homeStyles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  blockContent: {
-    flex:1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  btn: {
-    backgroundColor: 'red',
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    marginVertical: 20
-  },
-});

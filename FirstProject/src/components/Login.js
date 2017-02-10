@@ -20,6 +20,7 @@ export default class Login extends Component{
   handleLogin(){
     let username = this.props.state.username;
     let password = this.props.state.password;
+    console.log(username+'-'+password);
     if(username == 'tuan.tha' && password == 'frontend')
     {
       this.props.navigator.push({name:'home'});
@@ -49,7 +50,7 @@ export default class Login extends Component{
               placeholderTextColor='#ccc'
               onChangeText={(text)=>{this.props.handleChangeText(text,'username')}}
               onFocus={()=>{this.props.onFocus('isFocusUsername')}}
-              onBlur={()=>{this.props.clearState()}}
+              onBlur={()=>{this.props.clearStateFocus()}}
             />
           </View>
           <View style={[styles.inputWrapper,{borderColor:focusPass}]}>
@@ -60,12 +61,12 @@ export default class Login extends Component{
             <TextInput
               style={styles.input}
               secureTextEntry={true}
-              underlineColorAndroid='rgba(0,0,0,0)'
+              underlineColorAndroid='transparent'
               placeholder='password'
               placeholderTextColor='#ccc'
               onChangeText={(text)=>{this.props.handleChangeText(text,'password')}}
               onFocus={()=>{this.props.onFocus('isFocusPass')}}
-              onBlur={()=>{this.props.clearState()}}
+              onBlur={()=>{this.props.clearStateFocus()}}
             />
           </View>
           <TouchableOpacity style={styles.btn} onPress={this.handleLogin.bind(this)}>
