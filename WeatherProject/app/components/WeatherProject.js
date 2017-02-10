@@ -13,7 +13,7 @@ export default class WeatherProject extends Component {
   }
 
   componentWillMount(){
-    fetch('http://api.openweathermap.org/data/2.5/forecast/daily?q=London&units=imperial&cnt=7&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add')
+    fetch('http://api.openweathermap.org/data/2.5/forecast/daily?q=Ho_Chi_Minh&units=imperial&cnt=7&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add')
       .then((response) => response.json())
       .then((responseJSON) => {
         let data = [];
@@ -24,22 +24,21 @@ export default class WeatherProject extends Component {
           forecast: data
         });
       });
-    let arrDay=[];
-    let day = new Date();
-    let month = day.getMonth()+1;
-    let i=1;
-    while(i<7){
-      let obj = this.addDays(i);
-      arrDay.push(obj);
-      i++;
-    }
+    this.getDayTime();
+  }
+
+  getDayTime() {
+    let month = (new Date().getMonth()+1).toString();
+    let timeStr = this.addDays(0);
+    let dayOfWeek = timeStr.slice(0,3);
+    let dayofMonth = timeStr.slice(8,10).concat('/',month);
+    console.log(dayofMonth);
   }
 
   addDays(numDays) {
     let dateObj = new Date();
     dateObj.setDate(dateObj.getDate()+numDays);
-    console.log(dateObj);
-    return dateObj;
+    return dateObj.toDateString();
   }
 
   render() {
@@ -49,7 +48,7 @@ export default class WeatherProject extends Component {
           <Image
             source={require('../icons/Pointer-icon.png')}
           />
-          <Text style={{marginLeft: 10, color: '#FFFFFF'}}>London</Text>
+          <Text style={{marginLeft: 10, color: '#FFFFFF'}}>Ho Chi Minh</Text>
         </View>
         <View style={styles.currForecast}>
           <View style={styles.currDay}>
@@ -63,11 +62,14 @@ export default class WeatherProject extends Component {
         </View>
         <View style={styles.dailyWrapper}>
           {
-            this.state.forecast.map((t, index)=>
-              <Forecast
-                key={index}
-                data={t}
-              />
+            this.state.forecast.map((t, index)=>{
+                if(index!=0){
+                  return(<Forecast
+                    key={index}
+                    data={t}
+                  />)
+                }
+              }
             )
           }
         </View>

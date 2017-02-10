@@ -3,7 +3,6 @@ import {View, Text, StyleSheet} from 'react-native';
 
 export default class Forecast extends Component{
   render(){
-    console.log('render: '+this.props.data);
     return(
       <View style={styles.dailyForecast}>
         <Text style={styles.bigText}>
