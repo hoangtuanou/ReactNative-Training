@@ -2,18 +2,20 @@ import React, {Component} from 'react';
 import {
   View, Text, StyleSheet, Image, TextInput
 } from 'react-native';
-import Forecast from './Forecast';
+import Home from './Home';
+import Load from './Load';
 
 export default class WeatherProject extends Component {
   constructor(props){
     super(props);
     this.state = {
-      forecast: []
+      forecast: [],
+      isLoad: false
     };
   }
 
   componentWillMount(){
-    fetch('http://api.openweathermap.org/data/2.5/forecast/daily?q=London&units=imperial&cnt=7&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add')
+    fetch('http://api.openweathermap.org/data/2.5/forecast/daily?q=Ho_Chi_Minh&units=imperial&cnt=7&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add')
       .then((response) => response.json())
       .then((responseJSON) => {
         let data = [];
@@ -23,89 +25,57 @@ export default class WeatherProject extends Component {
         this.setState({
           forecast: data
         });
+      })
+      .then(()=>{
+        this.getTime();
       });
-    let arrDay=[];
-    let day = new Date();
-    let month = day.getMonth()+1;
-    let i=1;
-    while(i<7){
-      let obj = this.addDays(i);
-      arrDay.push(obj);
-      i++;
-    }
+  }
+
+  getTime() {
+    let i= 0;
+    let dateObj = {};
+    let {forecast} = this.state;
+    let timeStr = this.addDays(i);
+    let month = new Date().getMonth()+1;
+    forecast.forEach((t)=>{
+      dateObj = {
+        day: timeStr.slice(0,3),
+        dateMonth: timeStr.slice(8,10).concat('/',month.toString())
+      }
+      t.time = dateObj;
+    });
+    this.setState({forecast});
+    this.setState({isLoad:true});
   }
 
   addDays(numDays) {
     let dateObj = new Date();
     dateObj.setDate(dateObj.getDate()+numDays);
-    console.log(dateObj);
-    return dateObj;
+    return dateObj.toDateString();
+  }
+
+  renderLoading() {
+    if(this.state.isLoad){
+      return(
+        <Home
+          state={this.state}
+        />
+      );
+    }
+    else{
+      return(
+        <Load/>
+      );
+    }
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.blockTitle}>
-          <Image
-            source={require('../icons/Pointer-icon.png')}
-          />
-          <Text style={{marginLeft: 10, color: '#FFFFFF'}}>London</Text>
-        </View>
-        <View style={styles.currForecast}>
-          <View style={styles.currDay}>
-            <Text style={{color: '#FFFFFF'}}>Fri 29/06</Text>
-            <Text style={styles.currText}>24</Text>
-          </View>
-          <Image 
-            source={require('../icons/SunCloud-big.png')}
-            style={styles.currIcon}
-          />
-        </View>
-        <View style={styles.dailyWrapper}>
-          {
-            this.state.forecast.map((t, index)=>
-              <Forecast
-                key={index}
-                data={t}
-              />
-            )
-          }
-        </View>
+      <View style={{flex:1}}>
+        {
+          this.renderLoading()
+        }
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  blockTitle: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#cc324b',
-  },
-  currForecast: {
-    flex: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 70,
-    alignItems: 'center',
-    backgroundColor: '#e64c65'
-  },
-  currDay: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  currText: {
-    fontSize: 60,
-    lineHeight: 60,
-    color: '#FFFFFF'
-  },
-  dailyWrapper: {
-    flex: 7,
-    flexDirection: 'column'
-  }
-});
