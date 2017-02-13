@@ -3,11 +3,12 @@ import {View, Text, StyleSheet} from 'react-native';
 
 export default class Forecast extends Component{
   render(){
+    let {data} = this.props;
     return(
       <View style={styles.dailyForecast}>
-        <Text style={styles.bigText}>
-          {this.props.data.weather[0].main}
-        </Text>
+        <View>
+          <Text>{data.time.day + " " + data.time.dateMonth}</Text>
+        </View>
       </View>
     )
   }
