@@ -7,6 +7,7 @@ import { actionCreators } from '../redux/todoRedux'
 import Title from '../components/Title'
 import Footer from '../components/Footer'
 import List from '../components/List'
+import Input from '../components/Input'
 
 const styles = StyleSheet.create({
   container: {
@@ -25,11 +26,25 @@ class App extends Component {
     dispatch: PropTypes.func.isRequired,
   }
 
+  onSubmit = (text) => {
+    const {dispatch} = this.props;
+    dispatch(actionCreators.addItem(text));
+  }
+  onToggle = (i) => {
+
+  }
   render() {
+    const {items} = this.props;
     return (
       <View style={styles.container}>
         <Title/>
-        <List/>
+        <Input
+          onSubmit={this.onSubmit}
+        />
+        <List
+          onToggle={this.onToggle}
+          items={items}
+        />
         <Footer/>
       </View>
     )
