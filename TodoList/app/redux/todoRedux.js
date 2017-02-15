@@ -1,7 +1,8 @@
 const types = {
   ADD_ITEM: 'ADD_ITEM',
   TOGGLE_ITEM_COMPLETED: 'TOGGLE_ITEM_COMPLETED',
-  REMOVE_ITEM: 'REMOVE_ITEM'
+  REMOVE_ITEM: 'REMOVE_ITEM',
+  REMOVE_ITEM_COMPLETED: 'REMOVE_ITEM_COMPLETED'
 }
 
 export const actionCreators = {
@@ -17,12 +18,18 @@ export const actionCreators = {
       payload: i
     }
   },
-  removeItem: (item) => {
+  removeItem: (i) => {
     return {
       type: types.REMOVE_ITEM,
+      payload: i
+    }
+  },
+  removeItemCompleted: (item) => {
+    return {
+      type: types.REMOVE_ITEM_COMPLETED,
       payload: item
     }
-  }  
+  }
 }
 
 const initialState = {
@@ -47,6 +54,16 @@ export const reducer = (state = initialState, action) => {
           }
           return item;
         })
+      }
+    case types.REMOVE_ITEM:
+      return {
+        ...state,
+        items: items.filter((item,i)=> i!=payload)
+      }
+    case types.REMOVE_ITEM_COMPLETED:
+      return {
+        ...state,
+        items: items.filter((item)=>!item.completed)
       }
     default: {
       return state

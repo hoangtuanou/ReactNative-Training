@@ -31,7 +31,16 @@ class App extends Component {
     dispatch(actionCreators.addItem(text));
   }
   onToggle = (i) => {
-
+    const {dispatch} = this.props;
+    dispatch(actionCreators.toggleItem(i));
+  }
+  onRemoveItem = (i) => {
+    const {dispatch} = this.props;
+    dispatch(actionCreators.removeItem(i));
+  }
+  onRemoveCompleted = () => {
+    const {dispatch} = this.props;
+    dispatch(actionCreators.removeItemCompleted());
   }
   render() {
     const {items} = this.props;
@@ -42,10 +51,13 @@ class App extends Component {
           onSubmit={this.onSubmit}
         />
         <List
+          onRemoveItem={this.onRemoveItem}
           onToggle={this.onToggle}
           items={items}
         />
-        <Footer/>
+        <Footer
+          onRemoveCompleted={this.onRemoveCompleted}
+        />
       </View>
     )
   }

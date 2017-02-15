@@ -6,20 +6,20 @@ import Checkbox from './Checkbox'
 export default class List extends Component {
 
 	createItem = (item,i) => {
-		const {onToggle} = this.props;
+		const {onToggle,onRemoveItem} = this.props;
 		return (
 			<View
 				key={i}
 				style={styles.itemWrapper}
 			>
-				<Text>{item.label}</Text>
+				<Text style={{textDecorationLine:item.completed?'line-through':'none'}}>{item.label}</Text>
 				<View style={styles.rightFeatures}>
 					<Checkbox
-						onToggle={onToggle}
+						onToggle={()=>onToggle(i)}
 						isChecked={item.completed}
 					/>
-					<TouchableOpacity>
-
+					<TouchableOpacity onPress={()=>onRemoveItem(i)}>
+						<Text style={styles.remove}>&times;</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -48,9 +48,16 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		borderColor: 'whitesmoke',
 		borderWidth: 1,
-		paddingVertical: 15
+		paddingVertical: 15,
+		paddingHorizontal: 15
 	},
 	rightFeatures: {
-
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	remove: {
+		color: '#CD5C5C',
+		fontSize: 26,
+		marginLeft: 10
 	}
 })
