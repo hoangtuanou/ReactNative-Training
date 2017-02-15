@@ -1,21 +1,24 @@
 import React, {Component} from 'react';
 import {
   View,
+  Navigator
 } from 'react-native';
 import Home from './Home';
-import Load from './Load';
+import Search from './Search';
 
 export default class WeatherProject extends Component {
   constructor(props){
     super(props);
     this.state = {
       forecast: [],
-      isLoad: false
+      isLoad: false,
+      isFocus: false,
+      nameOfCity: ''
     };
   }
 
-  componentWillMount(){
-    fetch('http://api.openweathermap.org/data/2.5/forecast/daily?q=Ho_Chi_Minh&units=metric&cnt=16&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add')
+  fetchDataForecast = (navigator) => {
+    fetch(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${this.state.nameOfCity}&units=metric&cnt=16&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add`)
       .then((response) => response.json())
       .then((responseJSON) => {
         let data = [];
@@ -23,10 +26,11 @@ export default class WeatherProject extends Component {
           data.push(t);
         });
         this.getTime(data);
+        navigator.push({name:'home'});
       });
   }
 
-  getTime(data) {
+  getTime = (data) => {
     let i= 0;
     let month = new Date().getMonth()+1;
     if(month<10){
@@ -43,34 +47,50 @@ export default class WeatherProject extends Component {
     this.setState({isLoad:true});
   }
 
-  addDays(numDays) {
+  addDays = (numDays) => {
     let dateObj = new Date();
     dateObj.setDate(dateObj.getDate()+numDays);
     return dateObj.toDateString();
   }
 
-  renderLoading() {
-    if(this.state.isLoad){
-      return(
-        <Home
-          state={this.state}
-        />
-      );
-    }
-    else{
-      return(
-        <Load/>
-      );
+  onFocus = () => {
+    this.setState({isFocus:true});
+  }
+
+  onChangeText = (text) => {
+    this.setState({nameOfCity:text});
+  }
+
+  renderScene = (route, navigator) => {
+    switch(route.name){
+      case 'search':
+        return (
+          <Search
+            navigator={navigator}
+            onFocus={this.onFocus}
+            isFocus={this.state.isFocus}
+            onSubmitEditing={this.fetchDataForecast}
+            onChangeText={this.onChangeText}
+          />
+        )
+      case 'home':
+        return (
+          <Home
+            navigator={navigator}
+            forecast={this.state.forecast}
+            nameOfCity={this.state.nameOfCity}
+          />
+        )
     }
   }
 
   render() {
     return (
-      <View style={{flex:1}}>
-        {
-          this.renderLoading()
-        }
-      </View>
+      <Navigator
+        initialRoute={{name:'search'}}
+        renderScene={this.renderScene}
+      >
+      </Navigator>
     );
   }
 }

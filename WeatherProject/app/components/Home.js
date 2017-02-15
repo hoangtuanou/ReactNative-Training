@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {
-	View, Text, Image, StyleSheet, ScrollView
+	View, Text, Image, StyleSheet, ScrollView, TouchableOpacity
 } from 'react-native';
 import Forecast from './Forecast';
 
@@ -23,12 +23,12 @@ export default class Home extends Component{
 	}
 
 	render(){
-		let {forecast} = this.props.state;
+		let {forecast,nameOfCity} = this.props;
 		return(
 			<View style={styles.container}>
 				<View style={styles.title}>
 					<Image source={require('../icons/Pointer-icon.png')}/>
-					<Text style={styles.titleText}>Ho Chi Minh</Text>
+					<Text style={styles.titleText}>{nameOfCity}</Text>
 				</View>
 				<View style={styles.blockCurr}>
 					<View style={styles.wrapper}>
@@ -52,7 +52,7 @@ export default class Home extends Component{
 											<Forecast
 												key={index}
 												data={t}
-												renderIcon={this.renderIcon.bind(this)}
+												renderIcon={this.renderIcon}
 											/>
 										);
 									}
@@ -61,6 +61,9 @@ export default class Home extends Component{
 						}
 					</ScrollView>
 				</View>
+				<TouchableOpacity onPress={()=>this.props.navigator.popToTop()}>
+					<Text>Back</Text>
+				</TouchableOpacity>
 			</View>
 		)
 	}
