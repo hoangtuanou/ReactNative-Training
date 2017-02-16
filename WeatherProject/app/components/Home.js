@@ -1,29 +1,30 @@
 import React, {Component} from 'react';
 import {
-	View, Text, Image, StyleSheet, ScrollView, TouchableOpacity
+	View, Text, Image, StyleSheet, ListView, TouchableOpacity
 } from 'react-native';
 import Forecast from './Forecast';
 
 export default class Home extends Component{
-	renderIcon(weather) {
-    let icon;
-
-    switch(weather){
-      case 'Clouds':
-        icon = <Image source={require('./../icons/Clouds.png')}/>;
+	renderIcon(icon) {
+    let image;
+    switch(icon){
+      case 18:
+        image = <Image source={require('./../icons/Clouds-icon.png')}/>;
         break;
-      case 'Clear':
-        icon = <Image source={require('./../icons/Clear.png')}/>;
+      case 3:
+        image = <Image source={require('./../icons/Clear.png')}/>;
         break;
       default:
-        icon = <Image source={require('./../icons/Clouds-icon.png')}/>;;
+        image = <Image source={require('./../icons/Clouds.png')}/>;;
     }
 
-    return icon;
+    return image;
 	}
 
 	render(){
 		let {forecast,nameOfCity} = this.props;
+		let todayForecast = forecast.shift();
+		const ds = new ListView.DataSource({rowHasChanged: (r1,r2)=>r1!==r2});
 		return(
 			<View style={styles.container}>
 				<View style={styles.header}>
@@ -38,8 +39,8 @@ export default class Home extends Component{
 				<View style={styles.blockCurr}>
 					<View style={styles.wrapper}>
 						<View>
-							<Text style={styles.currDay}>{forecast[0].time.day.toUpperCase()+' '+forecast[0].time.dateMonth}</Text>
-							<Text style={styles.currTemp}>{Math.round(forecast[0].temp.eve)}&deg;</Text>
+							<Text style={styles.currDay}>{todayForecast.time.day.toUpperCase()+' '+todayForecast.time.dateMonth}</Text>
+							<Text style={styles.currTemp}>{Math.round(todayForecast.Temperature.Maximum.Value)}&deg;</Text>
 						</View>
 						<Image source={require('./../icons/SunCloud-big.png')}
 							resizeMode='contain'
@@ -47,24 +48,17 @@ export default class Home extends Component{
 					</View>
 				</View>
 				<View style={{flex:9}}>
-					<ScrollView						
-						automaticallyAdjustContentInsets={false}
-					>
-						{
-							forecast.map((t, index)=>{
-									if(index!=0){
-										return(
-											<Forecast
-												key={index}
-												data={t}
-												renderIcon={this.renderIcon}
-											/>
-										);
-									}
-								}
+					<ListView						
+						dataSource={ds.cloneWithRows(forecast)}
+						renderRow={(data) => {
+							return(
+								<Forecast
+									{...data}
+									renderIcon={this.renderIcon}
+								/>
 							)
-						}
-					</ScrollView>
+						}}
+					/>
 				</View>
 			</View>
 		)

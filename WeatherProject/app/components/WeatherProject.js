@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {
   View,
-  Navigator
+  Navigator,
+  ListView
 } from 'react-native';
 import Home from './Home';
 import Search from './Search';
@@ -11,23 +12,21 @@ export default class WeatherProject extends Component {
     super(props);
     this.state = {
       forecast: [],
-      isLoad: false,
       isFocus: false,
-      nameOfCity: ''
+      nameOfCity: '',
+      listCities: []
     };
   }
 
-  fetchDataForecast = (navigator) => {
-    fetch(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${this.state.nameOfCity}&units=metric&cnt=16&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add`)
-      .then((response) => response.json())
-      .then((responseJSON) => {
-        let data = [];
-        responseJSON.list.map((t)=>{
-          data.push(t);
-        });
-        this.getTime(data);
+  fetchDataForecast = (navigator,cityID,LocalizedName) => {
+    const APIKEY = 'FWaugDBcsPGXNdH0fTZGKuiYfoN928aG';
+    fetch(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${cityID}?apikey=${APIKEY}&details=true&metric=true`)
+      .then((res) => res.json())
+      .then((resJSON) => {
+        this.getTime(resJSON.DailyForecasts);
         navigator.push({name:'home'});
       });
+    this.setState({nameOfCity:LocalizedName});
   }
 
   getTime = (data) => {
@@ -44,7 +43,6 @@ export default class WeatherProject extends Component {
       }
     });
     this.setState({forecast:data});
-    this.setState({isLoad:true});
   }
 
   addDays = (numDays) => {
@@ -58,27 +56,35 @@ export default class WeatherProject extends Component {
   }
 
   onChangeText = (text) => {
-    this.setState({nameOfCity:text});
+    if(text!=''){
+      fetch(`https://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=zOEDguz3RM6DRGh1o9UIm7dCyU4qIlKU&q=${text}&language=es`)
+      .then((res)=>res.json())
+      .then((resJSON)=>{
+        this.setState({listCities: resJSON});
+      })
+    }
   }
 
   renderScene = (route, navigator) => {
+    const {isFocus,listCities,nameOfCity,forecast} = this.state;
     switch(route.name){
       case 'search':
         return (
           <Search
             navigator={navigator}
+            listCities={listCities}
+            isFocus={isFocus}
             onFocus={this.onFocus}
-            isFocus={this.state.isFocus}
-            onSubmitEditing={this.fetchDataForecast}
             onChangeText={this.onChangeText}
+            onPressRow={this.fetchDataForecast}
           />
         )
       case 'home':
         return (
           <Home
             navigator={navigator}
-            forecast={this.state.forecast}
-            nameOfCity={this.state.nameOfCity}
+            forecast={forecast}
+            nameOfCity={nameOfCity}
           />
         )
     }
