@@ -5,34 +5,17 @@ import {
 import Forecast from './Forecast';
 
 export default class Home extends Component{
-	renderIcon(weather) {
-    let icon;
-
-    switch(weather){
-      case 'Clouds':
-        icon = <Image source={require('./../icons/Clouds.png')}/>;
-        break;
-      case 'Clear':
-        icon = <Image source={require('./../icons/Clear.png')}/>;
-        break;
-      default:
-        icon = <Image source={require('./../icons/Clouds-icon.png')}/>;;
-    }
-
-    return icon;
-	}
-
 	render(){
-		let {forecast,nameOfCity} = this.props;
+		let {forecast} = this.props;
 		return(
 			<View style={styles.container}>
 				<View style={styles.header}>
-					<TouchableOpacity style={styles.backButton} onPress={()=>this.props.navigator.popToTop()}>
+					<TouchableOpacity style={styles.backButton} onPress={()=>this.props.navigator.pop()}>
 						<Text style={{color:'#FFFFFF'}}>Back</Text>
 					</TouchableOpacity>
 					<View style={styles.title}>
 						<Image source={require('../icons/Pointer-icon.png')}/>
-						<Text style={styles.titleText}>{nameOfCity}</Text>
+						<Text style={styles.titleText}>{forecast[0].cityName}</Text>
 					</View>
 				</View>
 				<View style={styles.blockCurr}>
@@ -41,8 +24,10 @@ export default class Home extends Component{
 							<Text style={styles.currDay}>{forecast[0].time.day.toUpperCase()+' '+forecast[0].time.dateMonth}</Text>
 							<Text style={styles.currTemp}>{Math.round(forecast[0].temp.eve)}&deg;</Text>
 						</View>
-						<Image source={require('./../icons/SunCloud-big.png')}
-							resizeMode='contain'
+						<Image
+							source={{uri: `http://openweathermap.org/img/w/${forecast[0].weather[0].icon}.png`}}
+	            resizeMode='cover'
+	            style={{width: 100,height: 100}}
 						/>
 					</View>
 				</View>

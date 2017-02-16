@@ -7,6 +7,7 @@ export default class Forecast extends Component{
   render(){
     let {data} = this.props;
     let isSunday = (data.time.day == 'Sun') ? '#cc324b': '#FFFFFF';
+    console.log(data);
     return(
       <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8}>
         <View style={styles.row}>
@@ -21,9 +22,10 @@ export default class Forecast extends Component{
           <Text style={{fontSize: 17, color: '#FFFFFF', marginRight: 10}}>
             {Math.round(data.temp.eve)}&deg;
           </Text>
-          {
-            this.props.renderIcon(data.weather[0].main)
-          }
+          <Image source={{uri: `http://openweathermap.org/img/w/${data.weather[0].icon}.png`}}
+            resizeMode='cover'
+            style={{width: 50,height: 50}}
+          />
         </View>
       </TouchableOpacity>
     )
@@ -43,7 +45,8 @@ const styles = StyleSheet.create({
     borderColor: 'black'
   },
   row: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   timeText: {
     marginRight: 5,

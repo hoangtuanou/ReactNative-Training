@@ -1,24 +1,45 @@
 import React,{Component} from 'react';
 import {
-	View, Text, StyleSheet, TextInput
+	View, Text, StyleSheet, TextInput, TouchableOpacity, Image
 } from 'react-native';
 
 
 export default class Search extends Component{
+	constructor(){
+		super();
+		this.state={text:''};
+	}
+	renderForecast = () => {
+		let {forecast,navigator,onPress} = this.props;
+		console.log(forecast);
+		let currForecast = forecast[0];
+		if(forecast.length!=0){
+			return(
+				<TouchableOpacity
+					onPress={()=>{navigator.push({name:'home'})}}
+					style={styles.wrapper}
+				>
+					<Image 
+						source={{uri: `http://openweathermap.org/img/w/${currForecast.weather[0].icon}.png`}}
+						style={{width: 100,height:100}}/>
+					<Text style={[styles.text,{fontSize: 40,marginTop: 10}]}>{currForecast.temp.eve}&deg;</Text>
+					<Text style={styles.text}>{currForecast.cityName}</Text>
+					<Text style={[styles.text,{fontSize: 25,marginVertical: 20}]}>{currForecast.weather[0].main}</Text>
+				</TouchableOpacity>
+			)
+		}
+	}
 	render(){
-		let {isFocus,onSubmitEditing,onFocus,navigator,onChangeText} = this.props;
-		let textInput;
+		let {onSubmitEditing,onChangeText} = this.props;
 		return(
-			<View style={[styles.container,{justifyContent: isFocus?'flex-start':'center'}]}>
-				<Text style={styles.text}>Search</Text>
+			<View style={styles.container}>
+				{this.renderForecast()}
 				<TextInput
-					ref={(e)=>{textInput=e;}}
 					style={styles.textInput}
 					underlineColorAndroid='transparent'
 					placeholder='Search for a city....'
-					onFocus={onFocus}
-					onChangeText={(text)=>{onChangeText(text)}}
-					onSubmitEditing={()=>{onSubmitEditing(navigator)}}
+					onChangeText={(text)=>{this.setState({text})}}
+					onSubmitEditing={(text)=>{onSubmitEditing(this.state.text)}}
 					blurOnSubmit={false}
 				/>
 			</View>
@@ -29,12 +50,14 @@ export default class Search extends Component{
 const styles = StyleSheet.create({
 	container: {
 		flex:1,
-		backgroundColor: '#394264'
+		backgroundColor: '#394264',
+		justifyContent: 'center'
+	},
+	wrapper: {
+		alignItems: 'center'
 	},
 	text:{
-		textAlign: 'center',
-		color: '#FFFFFF',
-		fontSize: 40
+		color: '#FFFFFF'
 	},
 	textInput: {
 		marginHorizontal: 10,
