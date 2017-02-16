@@ -26,9 +26,14 @@ export default class Home extends Component{
 		let {forecast,nameOfCity} = this.props;
 		return(
 			<View style={styles.container}>
-				<View style={styles.title}>
-					<Image source={require('../icons/Pointer-icon.png')}/>
-					<Text style={styles.titleText}>{nameOfCity}</Text>
+				<View style={styles.header}>
+					<TouchableOpacity style={styles.backButton} onPress={()=>this.props.navigator.popToTop()}>
+						<Text style={{color:'#FFFFFF'}}>Back</Text>
+					</TouchableOpacity>
+					<View style={styles.title}>
+						<Image source={require('../icons/Pointer-icon.png')}/>
+						<Text style={styles.titleText}>{nameOfCity}</Text>
+					</View>
 				</View>
 				<View style={styles.blockCurr}>
 					<View style={styles.wrapper}>
@@ -61,9 +66,6 @@ export default class Home extends Component{
 						}
 					</ScrollView>
 				</View>
-				<TouchableOpacity onPress={()=>this.props.navigator.popToTop()}>
-					<Text>Back</Text>
-				</TouchableOpacity>
 			</View>
 		)
 	}
@@ -73,11 +75,15 @@ const styles = StyleSheet.create({
 	container:{
 		flex: 1
 	},
-	title: {
+	header: {
 		flex: 1,
 		backgroundColor: '#cc324b',
 		flexDirection: 'row',
-		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	title: {
+		flex: 2,
+		flexDirection: 'row',
 		alignItems: 'center'
 	},
 	titleText: {
@@ -104,5 +110,9 @@ const styles = StyleSheet.create({
 	currTemp: {
 		color: '#FFFFFF',
 		fontSize: 70
+	},
+	backButton: {
+		flex: 1,
+		marginLeft: 20
 	}
 });
