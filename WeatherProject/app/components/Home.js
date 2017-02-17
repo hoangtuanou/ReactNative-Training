@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {
-	View, Text, Image, StyleSheet, ScrollView
+	View, Text, Image, StyleSheet, ListView
 } from 'react-native';
 import Forecast from './Forecast';
 
@@ -21,14 +21,14 @@ export default class Home extends Component{
 
     return icon;
 	}
-
 	render(){
-		let {forecast} = this.props.state;
+		let {forecast} = this.props;
+		const ds = new ListView.DataSource({rowHasChanged: (r1,r2)=>r1!==r2});
 		return(
 			<View style={styles.container}>
 				<View style={styles.title}>
 					<Image source={require('../icons/Pointer-icon.png')}/>
-					<Text style={styles.titleText}>Ho Chi Minh</Text>
+					<Text style={styles.titleText}>Tokyo</Text>
 				</View>
 				<View style={styles.blockCurr}>
 					<View style={styles.wrapper}>
@@ -42,24 +42,35 @@ export default class Home extends Component{
 					</View>
 				</View>
 				<View style={{flex:9}}>
-					<ScrollView						
-						automaticallyAdjustContentInsets={false}
-					>
-						{
-							forecast.map((t, index)=>{
-									if(index!=0){
-										return(
-											<Forecast
-												key={index}
-												data={t}
-												renderIcon={this.renderIcon.bind(this)}
-											/>
-										);
-									}
+					<ListView						
+						dataSource={ds.cloneWithRows(forecast)}
+						renderRow={(data, sectionID, rowID, highlightRow)=>{
+								if(rowID!=0){
+									return (<Forecast
+										data={data}
+										sectionID={sectionID}
+										rowID={rowID}
+										highlightRow={highlightRow}
+										renderIcon={this.renderIcon.bind(this)}
+									/>);
 								}
-							)
+								else{
+									return null;
+								}
+							}
 						}
-					</ScrollView>
+						renderSeparator={(sectionID, rowID, adjacentRowHighlighted) => {
+					    return (
+					      <View
+					        key={`${sectionID}-${rowID}`}
+					        style={{
+					          height: 1,
+					          backgroundColor: adjacentRowHighlighted ? 'black' : 'grey',
+					        }} 
+					      />
+					    );
+					  }}
+					/>
 				</View>
 			</View>
 		)
@@ -83,7 +94,7 @@ const styles = StyleSheet.create({
 		marginLeft: 15
 	},
 	blockCurr: {
-		flex: 2,
+		flex: 3,
 		backgroundColor: '#e64c65',
 		alignItems: 'center',
 		paddingVertical: 20

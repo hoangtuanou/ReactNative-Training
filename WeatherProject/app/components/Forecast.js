@@ -5,10 +5,10 @@ import {
 
 export default class Forecast extends Component{
   render(){
-    let {data} = this.props;
+    let {data, sectionID, rowID, highlightRow} = this.props;
     let isSunday = (data.time.day == 'Sun') ? '#cc324b': '#FFFFFF';
     return(
-      <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8}>
+      <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8} onPress={()=>highlightRow(sectionID,rowID)}>
         <View style={styles.row}>
           <Text style={[styles.timeText, {color: isSunday}]}>
             {data.time.day.toUpperCase()}
@@ -38,9 +38,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#394264',
-    borderBottomWidth: 0.7,
-    borderColor: 'black'
+    backgroundColor: '#394264'
   },
   row: {
     flexDirection: 'row'
