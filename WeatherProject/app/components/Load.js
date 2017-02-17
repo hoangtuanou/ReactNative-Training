@@ -1,10 +1,11 @@
 import React,{Component} from 'react';
 import {
-	View, Text, StyleSheet
+	View, Text, StyleSheet, Image
 } from 'react-native';
 
 const Load = () => (
 	<View style={styles.container}>
+		<Image source={require('./../icons/loader.gif')} style={{width: 90, height: 90}}/>
 		<Text style={styles.textLoad}>Loading....</Text>
 	</View>
 );
