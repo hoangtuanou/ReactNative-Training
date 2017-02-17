@@ -95,6 +95,7 @@ export default class WeatherProject extends Component {
       <Navigator
         initialRoute={{name:'search'}}
         renderScene={this.renderScene}
+        configureScene={(route,routeStack)=> Navigator.SceneConfigs.VerticalUpSwipeJump}
       >
       </Navigator>
     );
