@@ -5,25 +5,11 @@ import {
 import Forecast from './Forecast';
 
 export default class Home extends Component{
-	renderIcon(icon) {
-    let image;
-    switch(icon){
-      case 18:
-        image = <Image source={require('./../icons/Clouds-icon.png')}/>;
-        break;
-      case 3:
-        image = <Image source={require('./../icons/Clear.png')}/>;
-        break;
-      default:
-        image = <Image source={require('./../icons/Clouds.png')}/>;;
-    }
-
-    return image;
-	}
 
 	render(){
 		let {forecast,nameOfCity} = this.props;
 		let todayForecast = forecast.shift();
+		const icon = todayForecast.Day.Icon;
 		const ds = new ListView.DataSource({rowHasChanged: (r1,r2)=>r1!==r2});
 		return(
 			<View style={styles.container}>
@@ -42,8 +28,8 @@ export default class Home extends Component{
 							<Text style={styles.currDay}>{todayForecast.time.day.toUpperCase()+' '+todayForecast.time.dateMonth}</Text>
 							<Text style={styles.currTemp}>{Math.round(todayForecast.Temperature.Maximum.Value)}&deg;</Text>
 						</View>
-						<Image source={require('./../icons/SunCloud-big.png')}
-							resizeMode='contain'
+						<Image source={{uri: `https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/${(icon<10)?'0'+icon:icon}-s.png`}}
+							style={{width: 95,height: 65}}
 						/>
 					</View>
 				</View>
@@ -54,7 +40,6 @@ export default class Home extends Component{
 							return(
 								<Forecast
 									{...data}
-									renderIcon={this.renderIcon}
 								/>
 							)
 						}}

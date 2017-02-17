@@ -6,7 +6,7 @@ import {
 export default class Forecast extends Component{
   render(){
     let data = this.props;
-    console.log(data);
+    const icon = data.Day.Icon;
     let isSunday = (data.time.day == 'Sun') ? '#cc324b': '#FFFFFF';
     return(
       <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8}>
@@ -22,9 +22,10 @@ export default class Forecast extends Component{
           <Text style={{fontSize: 17, color: '#FFFFFF', marginRight: 10}}>
             {Math.round(data.Temperature.Maximum.Value)}&deg;
           </Text>
-          {
-            this.props.renderIcon(data.Day.Icon)
-          }
+          <Image 
+            source={{uri: `https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/${(icon<10)?'0'+icon:icon}-s.png`}}
+            style={{width: 55,height: 35}}
+            />
         </View>
       </TouchableOpacity>
     )
@@ -44,7 +45,8 @@ const styles = StyleSheet.create({
     borderColor: 'black'
   },
   row: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   timeText: {
     marginRight: 5,
