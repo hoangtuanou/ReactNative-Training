@@ -29,14 +29,11 @@ export default class WeatherProject extends Component {
   getTime(data) {
     let i= 0;
     let month = new Date().getMonth()+1;
-    if(month<10){
-      month = '0'+month;
-    }
     data.forEach((t)=>{
       let timeStr = this.addDays(i++);
       t.time = {
         day: timeStr.slice(0,3),
-        dateMonth: timeStr.slice(8,10).concat('/',month)
+        dateMonth: timeStr.slice(8,10).concat('/',(month<10)?'0'+month:month)
       }
     });
     this.setState({forecast:data});

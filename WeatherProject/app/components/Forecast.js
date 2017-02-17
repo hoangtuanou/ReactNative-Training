@@ -5,7 +5,7 @@ import {
 
 export default class Forecast extends Component{
   render(){
-    let {data, sectionID, rowID, highlightRow} = this.props;
+    let {data, sectionID, rowID, highlightRow, renderIcon} = this.props;
     let isSunday = (data.time.day == 'Sun') ? '#cc324b': '#FFFFFF';
     return(
       <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8} onPress={()=>highlightRow(sectionID,rowID)}>
@@ -22,7 +22,7 @@ export default class Forecast extends Component{
             {Math.round(data.temp.eve)}&deg;
           </Text>
           {
-            this.props.renderIcon(data.weather[0].main)
+            renderIcon(data.weather[0].main)
           }
         </View>
       </TouchableOpacity>
