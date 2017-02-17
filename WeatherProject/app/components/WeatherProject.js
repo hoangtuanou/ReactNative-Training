@@ -15,7 +15,7 @@ export default class WeatherProject extends Component {
   }
 
   fetchDataForecast = (cityName) => {
-    fetch(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${cityName}&units=metric&cnt=16&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add`)
+    fetch(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${cityName}&units=metric&cnt=10&mode=json&APPID=d47e778f4341fa1b85542cdaa5147add`)
       .then((response) => response.json())
       .then((responseJSON) => {
         let data = [];

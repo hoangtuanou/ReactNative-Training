@@ -11,7 +11,6 @@ export default class Search extends Component{
 	}
 	renderForecast = () => {
 		let {forecast,navigator,onPress} = this.props;
-		console.log(forecast);
 		let currForecast = forecast[0];
 		if(forecast.length!=0){
 			return(

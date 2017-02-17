@@ -7,7 +7,6 @@ export default class Forecast extends Component{
   render(){
     let {data} = this.props;
     let isSunday = (data.time.day == 'Sun') ? '#cc324b': '#FFFFFF';
-    console.log(data);
     return(
       <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8}>
         <View style={styles.row}>
@@ -38,7 +37,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: '#394264',
     borderBottomWidth: 0.7,
