@@ -5,10 +5,16 @@ import {
 
 export default class Forecast extends Component{
   render(){
-    let {data, sectionID, rowID, highlightRow, renderIcon} = this.props;
+    let {data, sectionID, rowID, handlePress, activeRow} = this.props;
     let isSunday = (data.time.day == 'Sun') ? '#cc324b': '#FFFFFF';
     return(
-      <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8} onPress={()=>highlightRow(sectionID,rowID)}>
+      <TouchableOpacity
+        style={[styles.dailyForecast,{backgroundColor: (rowID==activeRow)?'#bfbfbf':'#394264'}]}
+        activeOpacity={0.8}
+        onPress={()=>{
+          handlePress(rowID);
+        }}
+      >
         <View style={styles.row}>
           <Text style={[styles.timeText, {color: isSunday}]}>
             {data.time.day.toUpperCase()}
@@ -21,9 +27,11 @@ export default class Forecast extends Component{
           <Text style={{fontSize: 17, color: '#FFFFFF', marginRight: 10}}>
             {Math.round(data.temp.eve)}&deg;
           </Text>
-          {
-            renderIcon(data.weather[0].main)
-          }
+          <Image
+            source={{uri: `http://openweathermap.org/img/w/${data.weather[0].icon}.png`}}
+            resizeMode='cover'
+            style={{width: 50,height: 50}}
+          />
         </View>
       </TouchableOpacity>
     )
@@ -37,11 +45,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#394264'
+    paddingHorizontal: 20
   },
   row: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   timeText: {
     marginRight: 5,

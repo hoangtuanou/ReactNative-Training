@@ -5,24 +5,21 @@ import {
 import Forecast from './Forecast';
 
 export default class Home extends Component{
-	renderIcon(weather) {
-    let icon;
-
-    switch(weather){
-      case 'Clouds':
-        icon = <Image source={require('./../icons/Clouds.png')}/>;
-        break;
-      case 'Clear':
-        icon = <Image source={require('./../icons/Clear.png')}/>;
-        break;
-      default:
-        icon = <Image source={require('./../icons/Clouds-icon.png')}/>;;
-    }
-
-    return icon;
+	constructor() {
+		super();
+		this.state = {currForecast:{}, activeRow: 0};
+	}
+	handlePress(rowID) {
+		let {forecast} = this.props;
+		this.setState({currForecast:forecast[rowID],activeRow: rowID});
 	}
 	render(){
 		let {forecast} = this.props;
+		let {currForecast} = this.state;
+		console.log(Object.keys(currForecast).length);
+		if(Object.keys(currForecast).length==0){
+			currForecast = forecast[0];
+		}
 		const ds = new ListView.DataSource({rowHasChanged: (r1,r2)=>r1!==r2});
 		return(
 			<View style={styles.container}>
@@ -33,39 +30,36 @@ export default class Home extends Component{
 				<View style={styles.blockCurr}>
 					<View style={styles.wrapper}>
 						<View>
-							<Text style={styles.currDay}>{forecast[0].time.day.toUpperCase()+' '+forecast[0].time.dateMonth}</Text>
-							<Text style={styles.currTemp}>{Math.round(forecast[0].temp.eve)}&deg;</Text>
+							<Text style={styles.currDay}>{currForecast.time.day.toUpperCase()+' '+currForecast.time.dateMonth}</Text>
+							<Text style={styles.currTemp}>{Math.round(currForecast.temp.eve)}&deg;</Text>
 						</View>
-						<Image source={require('./../icons/SunCloud-big.png')}
-							resizeMode='contain'
-						/>
+						<Image
+	            source={{uri: `http://openweathermap.org/img/w/${currForecast.weather[0].icon}.png`}}
+	            resizeMode='cover'
+	            style={{width: 100,height: 100}}
+	          />
 					</View>
 				</View>
 				<View style={{flex:9}}>
 					<ListView						
 						dataSource={ds.cloneWithRows(forecast)}
 						renderRow={(data, sectionID, rowID, highlightRow)=>{
-								if(rowID!=0){
-									return (<Forecast
-										data={data}
-										sectionID={sectionID}
-										rowID={rowID}
-										highlightRow={highlightRow}
-										renderIcon={this.renderIcon.bind(this)}
-									/>);
-								}
-								else{
-									return null;
-								}
+								return (<Forecast
+									data={data}
+									sectionID={sectionID}
+									rowID={rowID}
+									activeRow={this.state.activeRow}
+									handlePress={this.handlePress.bind(this)}
+								/>);
 							}
 						}
-						renderSeparator={(sectionID, rowID, adjacentRowHighlighted) => {
+						renderSeparator={(sectionID, rowID) => {
 					    return (
 					      <View
 					        key={`${sectionID}-${rowID}`}
 					        style={{
 					          height: 1,
-					          backgroundColor: adjacentRowHighlighted ? 'black' : 'grey',
+					          backgroundColor: 'grey',
 					        }} 
 					      />
 					    );
