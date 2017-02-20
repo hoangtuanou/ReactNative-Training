@@ -16,7 +16,6 @@ export default class Home extends Component{
 	render(){
 		let {forecast} = this.props;
 		let {currForecast} = this.state;
-		console.log(Object.keys(currForecast).length);
 		if(Object.keys(currForecast).length==0){
 			currForecast = forecast[0];
 		}
@@ -43,7 +42,7 @@ export default class Home extends Component{
 				<View style={{flex:9}}>
 					<ListView						
 						dataSource={ds.cloneWithRows(forecast)}
-						renderRow={(data, sectionID, rowID, highlightRow)=>{
+						renderRow={(data, sectionID, rowID)=>{
 								return (<Forecast
 									data={data}
 									sectionID={sectionID}
