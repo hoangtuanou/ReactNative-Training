@@ -5,11 +5,15 @@ import {
 
 export default class Forecast extends Component{
   render(){
-    let data = this.props;
-    const icon = data.Day.Icon;
+    let {data, rowID, handlePress, activeRow} = this.props;
+    const icon = (data.Day.Icon<10)?'0'+data.Day.Icon:data.Day.Icon;
     let isSunday = (data.time.day == 'Sun') ? '#cc324b': '#FFFFFF';
     return(
-      <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8}>
+      <TouchableOpacity
+        style={[styles.dailyForecast,{backgroundColor: (rowID==activeRow)?'#bfbfbf':'#394264'}]}
+        activeOpacity={0.8}
+        onPress={()=>handlePress(rowID)}
+      >
         <View style={styles.row}>
           <Text style={[styles.timeText, {color: isSunday}]}>
             {data.time.day.toUpperCase()}
@@ -23,7 +27,7 @@ export default class Forecast extends Component{
             {Math.round(data.Temperature.Maximum.Value)}&deg;
           </Text>
           <Image 
-            source={{uri: `https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/${(icon<10)?'0'+icon:icon}-s.png`}}
+            source={{uri: `https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/${icon}-s.png`}}
             style={{width: 55,height: 35}}
             />
         </View>
@@ -39,10 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#394264',
-    borderBottomWidth: 0.7,
-    borderColor: 'black'
+    paddingHorizontal: 20
   },
   row: {
     flexDirection: 'row',

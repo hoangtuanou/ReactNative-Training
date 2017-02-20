@@ -5,11 +5,21 @@ import {
 import Forecast from './Forecast';
 
 export default class Home extends Component{
-
+	constructor() {
+		super();
+		this.state = {currForecast:{}, activeRow: 0};
+	}
+	handlePress(rowID) {
+		let {forecast} = this.props;
+		this.setState({currForecast:forecast[rowID],activeRow: rowID});
+	}
 	render(){
 		let {forecast,nameOfCity} = this.props;
-		let todayForecast = forecast.shift();
-		const icon = todayForecast.Day.Icon;
+		let {currForecast} = this.state;
+		if(Object.keys(currForecast).length==0){
+			currForecast = forecast[0];
+		}
+		const icon = currForecast.Day.Icon;
 		const ds = new ListView.DataSource({rowHasChanged: (r1,r2)=>r1!==r2});
 		return(
 			<View style={styles.container}>
@@ -25,8 +35,8 @@ export default class Home extends Component{
 				<View style={styles.blockCurr}>
 					<View style={styles.wrapper}>
 						<View>
-							<Text style={styles.currDay}>{todayForecast.time.day.toUpperCase()+' '+todayForecast.time.dateMonth}</Text>
-							<Text style={styles.currTemp}>{Math.round(todayForecast.Temperature.Maximum.Value)}&deg;</Text>
+							<Text style={styles.currDay}>{currForecast.time.day.toUpperCase()+' '+currForecast.time.dateMonth}</Text>
+							<Text style={styles.currTemp}>{Math.round(currForecast.Temperature.Maximum.Value)}&deg;</Text>
 						</View>
 						<Image source={{uri: `https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/${(icon<10)?'0'+icon:icon}-s.png`}}
 							style={{width: 95,height: 65}}
@@ -36,13 +46,27 @@ export default class Home extends Component{
 				<View style={{flex:9}}>
 					<ListView						
 						dataSource={ds.cloneWithRows(forecast)}
-						renderRow={(data) => {
+						renderRow={(data,sectionID,rowID) => {
 							return(
 								<Forecast
-									{...data}
+									data={data}
+									rowID={rowID}
+									activeRow={this.state.activeRow}
+									handlePress={this.handlePress.bind(this)}
 								/>
 							)
 						}}
+						renderSeparator={(sectionID, rowID) => {
+					    return (
+					      <View
+					        key={`${sectionID}-${rowID}`}
+					        style={{
+					          height: 1,
+					          backgroundColor: 'grey',
+					        }} 
+					      />
+					    );
+					  }}
 					/>
 				</View>
 			</View>
