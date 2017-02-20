@@ -28,25 +28,25 @@ export default class WeatherProject extends Component {
 
   getTime = (data,cityName) => {
     let i= 0;
-    let month = new Date().getMonth()+1;
-    if(month<10){
-      month = '0'+month;
-    }
     data.forEach((t)=>{
       let timeStr = this.addDays(i++);
       t.time = {
         day: timeStr.slice(0,3),
-        dateMonth: timeStr.slice(8,10).concat('/',month)
+        dateMonth: timeStr.slice(4)
       }
       t.cityName=cityName;
     });
     this.setState({forecast:data});
   }
 
-  addDays = (numDays) => {
+  addDays(numDays) {
     let dateObj = new Date();
     dateObj.setDate(dateObj.getDate()+numDays);
-    return dateObj.toDateString();
+    let month = dateObj. getMonth()+1;
+    month = (month<10)?'0'+month:month.toString();
+    let timeStr = dateObj.toDateString('dd-mm-yy');
+    let dateMonth = timeStr.slice(8,10).concat('/',month);
+    return timeStr.slice(0,3).concat(' ',dateMonth);
   }
 
   renderScene = (route, navigator) => {
