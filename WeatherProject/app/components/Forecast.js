@@ -1,14 +1,18 @@
 import React, {Component} from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, Image, TouchableOpacity
+  View, Text, StyleSheet, Image, TouchableOpacity
 } from 'react-native';
 
 export default class Forecast extends Component{
   render(){
-    let {data} = this.props;
+    let {data, rowID, activeRow, handlePress} = this.props;
     let isSunday = (data.time.day == 'Sun') ? '#cc324b': '#FFFFFF';
     return(
-      <TouchableOpacity style={styles.dailyForecast} activeOpacity={0.8}>
+      <TouchableOpacity
+        style={[styles.dailyForecast,{backgroundColor: (rowID==activeRow)?'#bfbfbf':'#394264'}]}
+        activeOpacity={0.8}
+        onPress={()=>handlePress(rowID)}
+      >
         <View style={styles.row}>
           <Text style={[styles.timeText, {color: isSunday}]}>
             {data.time.day.toUpperCase()}
@@ -37,10 +41,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#394264',
-    borderBottomWidth: 0.7,
-    borderColor: 'black'
+    paddingHorizontal: 20
   },
   row: {
     flexDirection: 'row',

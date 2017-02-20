@@ -1,12 +1,25 @@
 import React, {Component} from 'react';
 import {
-	View, Text, Image, StyleSheet, ScrollView, TouchableOpacity
+	View, Text, Image, StyleSheet, ListView, TouchableOpacity
 } from 'react-native';
 import Forecast from './Forecast';
 
 export default class Home extends Component{
+	constructor() {
+		super();
+		this.state = {currForecast:{}, activeRow: 0};
+	}
+	handlePress(rowID) {
+		let {forecast} = this.props;
+		this.setState({currForecast:forecast[rowID],activeRow: rowID});
+	}
 	render(){
 		let {forecast} = this.props;
+		let {currForecast} = this.state;
+		if(Object.keys(currForecast).length==0){
+			currForecast = forecast[0];
+		}
+		const ds = new ListView.DataSource({rowHasChanged: (r1,r2)=>r1!==r2});
 		return(
 			<View style={styles.container}>
 				<View style={styles.header}>
@@ -15,41 +28,47 @@ export default class Home extends Component{
 					</TouchableOpacity>
 					<View style={styles.title}>
 						<Image source={require('../icons/Pointer-icon.png')}/>
-						<Text style={styles.titleText}>{forecast[0].cityName}</Text>
+						<Text style={styles.titleText}>{currForecast.cityName}</Text>
 					</View>
 				</View>
 				<View style={styles.blockCurr}>
 					<View style={styles.wrapper}>
 						<View>
-							<Text style={styles.currDay}>{forecast[0].time.day.toUpperCase()+' '+forecast[0].time.dateMonth}</Text>
-							<Text style={styles.currTemp}>{Math.round(forecast[0].temp.eve)}&deg;</Text>
+							<Text style={styles.currDay}>{currForecast.time.day.toUpperCase()+' '+currForecast.time.dateMonth}</Text>
+							<Text style={styles.currTemp}>{Math.round(currForecast.temp.eve)}&deg;</Text>
 						</View>
 						<Image
-							source={{uri: `http://openweathermap.org/img/w/${forecast[0].weather[0].icon}.png`}}
+							source={{uri: `http://openweathermap.org/img/w/${currForecast.weather[0].icon}.png`}}
 	            resizeMode='cover'
 	            style={{width: 100,height: 100}}
 						/>
 					</View>
 				</View>
 				<View style={{flex:9}}>
-					<ScrollView						
-						automaticallyAdjustContentInsets={false}
-					>
-						{
-							forecast.map((t, index)=>{
-									if(index!=0){
-										return(
-											<Forecast
-												key={index}
-												data={t}
-												renderIcon={this.renderIcon}
-											/>
-										);
-									}
-								}
-							)
+					<ListView						
+						dataSource={ds.cloneWithRows(forecast)}
+						renderRow={(data, sectionID, rowID, highlightRow)=>{
+								return (<Forecast
+									data={data}
+									sectionID={sectionID}
+									rowID={rowID}
+									activeRow={this.state.activeRow}
+									handlePress={this.handlePress.bind(this)}
+								/>);
+							}
 						}
-					</ScrollView>
+						renderSeparator={(sectionID, rowID) => {
+					    return (
+					      <View
+					        key={`${sectionID}-${rowID}`}
+					        style={{
+					          height: 1,
+					          backgroundColor: 'grey',
+					        }} 
+					      />
+					    );
+					  }}
+					/>
 				</View>
 			</View>
 		)
