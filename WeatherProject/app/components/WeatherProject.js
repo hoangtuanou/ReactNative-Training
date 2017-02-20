@@ -5,6 +5,9 @@ import {
 import Home from './Home';
 import Load from './Load';
 
+const months = {
+
+}
 export default class WeatherProject extends Component {
   constructor(props){
     super(props);
@@ -28,12 +31,11 @@ export default class WeatherProject extends Component {
 
   getTime(data) {
     let i= 0;
-    let month = new Date().getMonth()+1;
     data.forEach((t)=>{
       let timeStr = this.addDays(i++);
       t.time = {
         day: timeStr.slice(0,3),
-        dateMonth: timeStr.slice(8,10).concat('/',(month<10)?'0'+month:month)
+        dateMonth: timeStr.slice(4)
       }
     });
     this.setState({forecast:data});
@@ -43,7 +45,11 @@ export default class WeatherProject extends Component {
   addDays(numDays) {
     let dateObj = new Date();
     dateObj.setDate(dateObj.getDate()+numDays);
-    return dateObj.toDateString();
+    let month = dateObj. getMonth()+1;
+    month = (month<10)?'0'+month:month.toString();
+    let timeStr = dateObj.toDateString('dd-mm-yy');
+    let dateMonth = timeStr.slice(8,10).concat('/',month);
+    return timeStr.slice(0,3).concat(' ',dateMonth);
   }
 
   renderLoading() {
