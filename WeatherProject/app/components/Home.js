@@ -3,6 +3,7 @@ import {
 	View, Text, Image, StyleSheet, ListView, TouchableOpacity
 } from 'react-native';
 import Forecast from './Forecast';
+import * as Animatable from 'react-native-animatable';
 
 export default class Home extends Component{
 	constructor() {
