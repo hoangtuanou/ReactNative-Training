@@ -70,7 +70,9 @@ export default class WatchControl extends Component{
 						underlayColor='#eee'
 						onPress={()=>this.startWatch()}
 					>
-						<Text style={[styles.btnStartText,{color:this.state.startBtnColor}]}>{this.state.startBtnText}</Text>
+						<Text style={[styles.btnStartText,{color:this.state.startBtnColor}]}>
+							{this.state.startBtnText}
+						</Text>
 					</TouchableHighlight>
 				</View>
 			</View>

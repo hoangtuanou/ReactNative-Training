@@ -47,7 +47,7 @@ export default class App extends Component{
 		}
 		else{
 			this.setState({
-				stopWatch: false,
+				stopWatch: true,
 				initialTime: (new Date()).getTime()
 			})
 		}
