@@ -3,7 +3,7 @@ import {
   View, Text, StyleSheet, ScrollView, Image, TouchableOpacity
 } from 'react-native';
 
-export default class Forecast extends Component{
+export default class RowForecast extends Component{
   render(){
     let {data, rowID, handlePress, activeRow} = this.props;
     const icon = (data.Day.Icon<10)?'0'+data.Day.Icon:data.Day.Icon;

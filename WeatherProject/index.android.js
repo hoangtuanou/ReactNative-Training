@@ -3,8 +3,15 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-
+import React, {Component} from 'react';
 import { AppRegistry } from 'react-native';
-import WeatherProject from './app/components/WeatherProject';
+import {Provider} from 'react-redux';
+import App from './app/components/App';
+import store from './app/store';
 
-AppRegistry.registerComponent('WeatherProject', () => WeatherProject);
+const AppWithStore = () => (
+  <Provider store={store}>
+    <App/>
+  </Provider>
+)
+AppRegistry.registerComponent('WeatherProject', () => AppWithStore);
