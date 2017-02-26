@@ -25,7 +25,9 @@ export default class WeatherProject extends Component {
   }
 
   onChangeText = (text) => {
-    this.props.fetchCities(text);
+    if (text != ''){
+      this.props.fetchCities(text);
+    }
   }
 
   renderScene = (route, navigator) => {
