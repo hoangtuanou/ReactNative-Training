@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import {
 	View, Text, StyleSheet, TextInput, ListView
 } from 'react-native';
-import Row from './Row';
+import RowCities from './RowCities';
 
 export default class Search extends Component{
 	renderListView = () => {
@@ -13,14 +13,16 @@ export default class Search extends Component{
 				<ListView
 					style={styles.listView}
 					dataSource={ds.cloneWithRows(listCities)}
-					renderRow={(data) => <Row {...data} onPressRow={onPressRow} navigator={navigator}/>}
+					renderRow={(data) => 
+						<RowCities {...data} onPressRow={onPressRow} navigator={navigator}/>
+					}
 				/>
 			)
 		}
 		else return
 	}
 	render(){
-		let {isFocus,onFocus,navigator,onChangeText,listCities} = this.props;
+		let {isFocus,onFocus,navigator,onChangeText} = this.props;
 		return(
 			<View style={[styles.container,{justifyContent: isFocus?'flex-start':'center'}]}>
 				<Text style={styles.text}>Search</Text>

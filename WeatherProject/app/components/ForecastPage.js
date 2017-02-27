@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import {
 	View, Text, Image, StyleSheet, ListView, TouchableOpacity
 } from 'react-native';
-import Forecast from './Forecast';
+import RowForecast from './RowForecast';
 import * as Animatable from 'react-native-animatable';
 
-export default class Home extends Component{
+export default class ForecastPage extends Component{
 	constructor() {
 		super();
 		this.state = {currForecast:{}, activeRow: 0};
@@ -15,8 +15,8 @@ export default class Home extends Component{
 		this.setState({currForecast:forecast[rowID],activeRow: rowID});
 	}
 	render(){
-		let {forecast,nameOfCity} = this.props;
 		let {currForecast} = this.state;
+		let {forecast} = this.props;
 		if(Object.keys(currForecast).length==0){
 			currForecast = forecast[0];
 		}
@@ -30,7 +30,7 @@ export default class Home extends Component{
 					</TouchableOpacity>
 					<View style={styles.title}>
 						<Image source={require('../icons/Pointer-icon.png')}/>
-						<Text style={styles.titleText}>{nameOfCity}</Text>
+						<Text style={styles.titleText}>nameOfCity</Text>
 					</View>
 				</View>
 				<View style={styles.blockCurr}>
@@ -49,7 +49,7 @@ export default class Home extends Component{
 						dataSource={ds.cloneWithRows(forecast)}
 						renderRow={(data,sectionID,rowID) => {
 							return(
-								<Forecast
+								<RowForecast
 									data={data}
 									rowID={rowID}
 									activeRow={this.state.activeRow}

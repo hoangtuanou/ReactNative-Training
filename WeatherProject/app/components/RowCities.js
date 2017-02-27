@@ -3,12 +3,12 @@ import {
 	View,Text, StyleSheet, TouchableOpacity
 } from 'react-native';
 
-export default class Row extends Component{
+export default class RowCities extends Component{
 	render(){
 		const {Country,LocalizedName,onPressRow,navigator,Key} = this.props;
 		return(
 
-			<TouchableOpacity style={styles.row} onPress={()=>{onPressRow(navigator,Key,LocalizedName)}}>
+			<TouchableOpacity style={styles.row} onPress={()=>{onPressRow(navigator,Key)}}>
 				<Text style={styles.text}>{LocalizedName}</Text>
 				<Text style={styles.text}>[{Country.ID}]</Text>
 			</TouchableOpacity>

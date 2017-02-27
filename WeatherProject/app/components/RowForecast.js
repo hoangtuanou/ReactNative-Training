@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
-export default class Forecast extends Component{
+export default class RowForecast extends Component{
   render(){
     let {data, rowID, handlePress, activeRow} = this.props;
     const icon = (data.Day.Icon<10)?'0'+data.Day.Icon:data.Day.Icon;
