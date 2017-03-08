@@ -17,7 +17,6 @@ export default class WeatherProject extends Component {
 
   fetchDataForecast = (navigator,cityID) => {
     this.props.fetchForecast(cityID, navigator);
-    console.log(this.props.forecast);
   }
 
   onFocus = () => {
@@ -57,7 +56,6 @@ export default class WeatherProject extends Component {
   }
 
   render() {
-    console.log('render Weather');
     return (
       <Navigator
         initialRoute={{name:'search'}}

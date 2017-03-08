@@ -1,0 +1,17 @@
+﻿User: devoyez
+Password: 46K3kUAQUJHWpD5H
+
+clone source xong chạy npm login rùi nhập acc đó,
+nó có hỏi email thì nhập truong.tt@sutrixsolutions.com
+do có dung 1 private package của Oyez nên log vào npm trước khi chạy npm install
+
+ AsyncStorage.setItem(QR_STORAGE_KEY, '10.0.2.178:8080');
+
+Clear catch
+
+rm -fr $TMPDIR/react-*
+
+build
+
+ ./gradlew installRelease
+ ./gradlew assembleRelease
