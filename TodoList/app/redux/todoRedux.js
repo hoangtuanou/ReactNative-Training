@@ -1,4 +1,4 @@
-const types = {
+export const types = {
   ADD_ITEM: 'ADD_ITEM',
   TOGGLE_ITEM_COMPLETED: 'TOGGLE_ITEM_COMPLETED',
   REMOVE_ITEM: 'REMOVE_ITEM',
@@ -24,10 +24,9 @@ export const actionCreators = {
       payload: i
     }
   },
-  removeItemCompleted: (item) => {
+  removeItemCompleted: () => {
     return {
-      type: types.REMOVE_ITEM_COMPLETED,
-      payload: item
+      type: types.REMOVE_ITEM_COMPLETED
     }
   }
 }
