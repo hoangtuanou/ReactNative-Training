@@ -28,6 +28,10 @@ export default class SwipeMenu extends Component{
 			onPanResponderMove: (e, gesture) => {
 				this._menuStyles.style.left = this._initLeft + gesture.dx;
 				this._dropStyles.style.opacity = this._initOpacity + Math.pow(gesture.dx/(-this._minleft),0.5);
+				if(this._menuStyles.style.left>(-width/2)){
+					this._menuStyles.style.left  = 0;
+					this._dropStyles.style.opacity = 1;
+				}
 				this.updatePosition();
 			},
 			onPanResponderRelease: (e, gesture) => {
