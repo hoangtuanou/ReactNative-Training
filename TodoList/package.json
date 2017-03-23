@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest --coverage",
+    "test": "jest --coverage --watch",
     "lint": "eslint *.js ./src/*.js"
   },
   "dependencies": {
-    "lodash": "^4.17.0",
+    "lodash": "^4.17.4",
     "react": "15.3.2",
     "react-native": "0.37.0",
     "react-native-router-flux": "^3.37.0",
@@ -19,7 +19,11 @@
     "reselect": "^2.5.4"
   },
   "jest": {
-    "preset": "jest-react-native"
+    "preset": "jest-react-native",
+    "coverageReporters": [
+      "html",
+      "text"
+    ]
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",

@@ -8,7 +8,7 @@ export default class RowCities extends Component{
 		const {Country,LocalizedName,onPressRow,navigator,Key} = this.props;
 		return(
 
-			<TouchableOpacity style={styles.row} onPress={()=>{onPressRow(navigator,Key)}}>
+			<TouchableOpacity style={styles.row} onPress={()=>{onPressRow(navigator,Key,LocalizedName)}}>
 				<Text style={styles.text}>{LocalizedName}</Text>
 				<Text style={styles.text}>[{Country.ID}]</Text>
 			</TouchableOpacity>

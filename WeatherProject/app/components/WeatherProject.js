@@ -11,12 +11,14 @@ export default class WeatherProject extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isFocus: false
+      isFocus: false,
+      nameOfCity: ''
     };
   }
 
-  fetchDataForecast = (navigator,cityID) => {
+  fetchDataForecast = (navigator,cityID, nameOfCity) => {
     this.props.fetchForecast(cityID, navigator);
+    this.setState({nameOfCity});
   }
 
   onFocus = () => {
@@ -50,6 +52,7 @@ export default class WeatherProject extends Component {
           <ForecastPage
             navigator={navigator}
             forecast={forecast}
+            nameOfCity={nameOfCity}
           />
         )
     }

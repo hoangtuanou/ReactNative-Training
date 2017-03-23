@@ -3,7 +3,6 @@ import {
 	View, Text, Image, StyleSheet, ListView, TouchableOpacity
 } from 'react-native';
 import RowForecast from './RowForecast';
-import * as Animatable from 'react-native-animatable';
 
 export default class ForecastPage extends Component{
 	constructor() {
@@ -16,7 +15,7 @@ export default class ForecastPage extends Component{
 	}
 	render(){
 		let {currForecast} = this.state;
-		let {forecast} = this.props;
+		let {forecast,nameOfCity} = this.props;
 		if(Object.keys(currForecast).length==0){
 			currForecast = forecast[0];
 		}
@@ -30,7 +29,7 @@ export default class ForecastPage extends Component{
 					</TouchableOpacity>
 					<View style={styles.title}>
 						<Image source={require('../icons/Pointer-icon.png')}/>
-						<Text style={styles.titleText}>nameOfCity</Text>
+						<Text style={styles.titleText}>{nameOfCity}</Text>
 					</View>
 				</View>
 				<View style={styles.blockCurr}>

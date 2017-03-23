@@ -13,7 +13,7 @@ export default class Search extends Component{
 				<ListView
 					style={styles.listView}
 					dataSource={ds.cloneWithRows(listCities)}
-					renderRow={(data) => 
+					renderRow={(data) =>
 						<RowCities {...data} onPressRow={onPressRow} navigator={navigator}/>
 					}
 				/>
