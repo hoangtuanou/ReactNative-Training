@@ -5,14 +5,15 @@ import {
 	Text,
 	StyleSheet,
 	DatePickerAndroid,
-	TouchableHighlight
+	TouchableHighlight,
+	TextInput
 } from 'react-native';
 
-function formatDate() {
+function formatDate(date) {
   const d = date.getDate();
-  const m = date.getMonth();
+  const m = date.getMonth()+1;
   const y = date.getFullYear();
-  return (d<9 ? '0'+d : d) + '/' + (m<9 ? '0'+m : m) + '/' + y;
+  return (d<10 ? '0'+d : d) + '/' + (m<10 ? '0'+m : m) + '/' + y;
 }
 
 export default class DatePicker extends Component {
@@ -23,6 +24,9 @@ export default class DatePicker extends Component {
 		};
 		this.togglePicker = this.togglePicker.bind(this);
 		this.handleValueChange = this.handleValueChange.bind(this);
+	}
+	handleValueChange(date) {
+		this.props.onChange(date);
 	}
 	async togglePicker(event) {
 		try {
@@ -41,12 +45,16 @@ export default class DatePicker extends Component {
 		return (
 			<View>
 				<TouchableHighlight
-					style={styles.picker}
+					style={styles.pickerContainer}
 					onPress={this.togglePicker}
 				>
-					<View>
-            <Text>Birthday</Text>
-						<Text>{this.state.date ? formatDate(this.state.date) : null}</Text>
+					<View style={styles.pickerWrapper}>
+						<Text>{this.props.date ? formatDate(this.props.date) : this.props.placeholder}</Text>
+						{/*<TextInput
+							editable={false}
+							value={this.props.date ? formatDate(this.props.date) : null}
+							underlineColorAndroid='black'
+						/>*/}
 					</View>
 				</TouchableHighlight>
 				{
@@ -62,7 +70,15 @@ export default class DatePicker extends Component {
 }
 
 const styles = StyleSheet.create({
-	picker: {
-
+	pickerContainer: {
+		height: 40,
+	},
+	pickerWrapper: {
+		flex: 1,
+		marginHorizontal: 4,
+		justifyContent: 'flex-end',
+		paddingBottom: 5,
+		borderColor: 'grey',
+		borderBottomWidth: 1
 	}
 });

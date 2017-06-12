@@ -12,12 +12,17 @@ import DatePicker from './DatePicker';
 export default class DatePickerField extends Component {
 	constructor(props) {
 		super(props);
+    this.state={
+      date: '',
+    }
 	}
 
 	render() {
 		return (
 			<DatePicker
-        date={this.state.}
+        {...this.props}
+        date={this.state.date}
+        onChange={(date) => this.setState({ date })}
       />
 		);
 	}
