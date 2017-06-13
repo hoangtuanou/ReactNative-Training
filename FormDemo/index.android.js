@@ -24,20 +24,32 @@ function validateEmail(email) {
 }
 
 function validateValueInput(value) {
-  const re = /^[A-Za-z]+$/;
+  const re =  /^([a-zA-Z ]+)$/;
   if (value.length !== 0)
-    console.log('validateValueInput', value.match(/\d+/g));
-    return (value.match(/\d+/g) == null) ? true : false;
+    return re.test(value);
   return true;
 }
 
 export class FormDemo extends React.Component{
   constructor(props){
     super(props);
+    this.handlePress = this.handlePress.bind(this);
+  }
+  handlePress() {
+    const isvalid = this.form.checkValid();
+    if (isvalid) {
+      const data = this.form.getValue();
+      alert(JSON.stringify(data));
+    } else {
+      const childRefs = this.form.getChildRefs();
+      childRefs.forEach((childRef) => {
+        if (childRef && this[childRef]) {
+          this[childRef].handleChangeText();
+        }
+      });
+    }
   }
   render() {
-    console.log('form', this.form);
-    console.log('firstName', this.firstName);
     return (
       <View>
         <Form
@@ -45,6 +57,7 @@ export class FormDemo extends React.Component{
         >
           <Text style={styles.title}>Informations client</Text>
           <InputField
+            fieldRef='firstName'
             ref={node => this.firstName = node}
             placeholder='Nom *'
             max={50}
@@ -52,23 +65,31 @@ export class FormDemo extends React.Component{
             onValidateFunctions={[validateValueInput]}
           />
           <InputField
+            fieldRef='lastName'
+            ref={node => this.lastName = node}
             placeholder='Prenoms *'
             max={50}
             isRequired={true}
             onValidateFunctions={[validateValueInput]}
           />
           <InputField
+            fieldRef='telephoneMobile'
+            ref={node => this.telephoneMobile = node}
             placeholder='Telephone mobile *'
             max={10}
             keyboardType='numeric'
             isRequired={true}
           />
           <InputField
+            fieldRef='telephoneFixe'
+            ref={node => this.telephoneFixe = node}
             placeholder='Telephone fixe'
             max={10}
             keyboardType='numeric'
           />
           <InputField
+            fieldRef='email'
+            ref={node => this.email = node}
             placeholder='Email *'
             isRequired={true}
             max={50}
@@ -77,14 +98,19 @@ export class FormDemo extends React.Component{
           />
           <Text style={styles.title}>Adresse</Text>
           <InputField
+            fieldRef='address'
+            ref={node => this.address = node}
             placeholder='Adresse'
             min={65}
           />
           <InputField
+            fieldRef='complementAddress'
+            ref={node => this.complementAddress = node}
             placeholder="Complement d'dresse"
             max={50}
           />
           <DatePickerField
+            fieldRef='birthday'
             placeholder='Date de naissance'
             isRequired={true}
           />
@@ -95,7 +121,7 @@ export class FormDemo extends React.Component{
           >
             <Button
               title='submit'
-              onPress={() => console.log('submit')}
+              onPress={this.handlePress}
             >Submit</Button>
           </View>
         </Form>

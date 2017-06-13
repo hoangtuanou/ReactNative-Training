@@ -16,13 +16,16 @@ export default class DatePickerField extends Component {
       date: '',
     }
 	}
-
+	handleChange(date) {
+		this.setState({ date });
+		this.props.onChange(this.props.fieldRef, date);
+	}
 	render() {
 		return (
 			<DatePicker
         {...this.props}
         date={this.state.date}
-        onChange={(date) => this.setState({ date })}
+        onChange={(date) => this.handleChange(date)}
       />
 		);
 	}

@@ -19,16 +19,18 @@ export default class InputField extends Component {
     this.handleChangeText = this.handleChangeText.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
   }
-  handleChangeText(text) { 
-    this.setState({ isValid: this.validate(text), text }, () => {
+  handleChangeText() {
+    const { text } = this.state;
+    this.setState({ isValid: this.validate(text) }, () => {
       this.props.handleTriggerValidation(this.state.isValid);
     });
+    this.props.onChange(this.props.fieldRef, text);
   }
   handleBlur() {
     if (!this.props.isRequired && this.state.text.length === 0) {
-      this.setState({ isShow: false });
+      this.setState({ isValid: true, isShow: false });
     } else {
-      this.setState({ isShow: true });
+      this.handleChangeText();
     }
   }
   validate(text) {
@@ -41,7 +43,7 @@ export default class InputField extends Component {
         isValid = validateFunc(text);
       }); 
     }
-    if (textLength > max || textLength < min) {
+    if (textLength > max || textLength < min || isRequired && textLength === 0) {
       isValid = false;
     }
     return isValid;
@@ -50,16 +52,18 @@ export default class InputField extends Component {
   render() {
     return (
       <View
-        style={styles.inputWrapper}
+        style={[styles.inputWrapper, {borderBottomColor: this.state.isValid ? 'grey' : 'red'}]}
       >
         <TextInput
-          ref={(node) => this.inputField = node}
           style={styles.input}
           placeholder={this.props.placeholder}
           placeholderTextColor='grey'
-          onChangeText={(text) => this.handleChangeText(text)}
+          autoCorrect={false}
+          onChangeText={(text) => {
+            this.setState({ text }, () => this.handleChangeText())
+          }}
           onBlur={this.handleBlur}
-          underlineColorAndroid={this.state.isValid ? 'grey' : 'red'}
+          underlineColorAndroid='transparent'
           keyboardType={this.props.keyboardType || 'default'}
         />
         <IconRight
@@ -83,10 +87,12 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
+    borderBottomWidth: 1,
+    marginHorizontal: 4
   },
   input: {
     flex: 1,
+    marginBottom: -10
   }
 });
